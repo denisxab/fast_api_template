@@ -9,9 +9,9 @@ router.include_router(session_pack.fast_session.router,
 """
 from fastapi import APIRouter, Form, Response, Request
 
-from session_pack.session_base import SESSION
+from fast_xabhelper.session_pack.session_base import SESSION
 
-router = APIRouter()
+router = APIRouter(tags=["session"], prefix="/session")
 
 
 @router.get("/get")

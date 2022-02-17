@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link href="{{ url_for('static', path='/admin_pack/css/styles.css') }}" rel="stylesheet">
+
+    <style>
+
+        #root {
+            text-align: center;
+            background: #7f99cc;
+
+        }
+
+        .right_text {
+            text-align: center;
+            padding-bottom: 10px;
+        }
+
+        #login {
+            border: #4c5448 3px solid;
+            width: 300px;
+            padding: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="root">
+    Admin Panel
+    <p></p>
+    <div id="login">
+        <form method="post" name="AdminLogin"
+              action="{{ url_login }}"
+              accept-charset="UTF-8"
+              autocomplete="on"
+              target="_self"
+              enctype="application/x-www-form-urlencoded">
+            <label>
+                <div class="right_text">
+                    User name
+                </div>
+                <input type="text" name="UserName">
+            </label>
+            <p></p>
+            <label>
+                <div class="right_text">
+                    Password
+                </div>
+                <input type="password" name="Password">
+            </label>
+            <p>
+                <input type="submit" value="Войти">
+            </p>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

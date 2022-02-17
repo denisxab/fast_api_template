@@ -12,11 +12,11 @@ from typing import Optional
 from fastapi import APIRouter, Form, Response, Request, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import get_session_transaction, hashPassword, get_session
-from session_pack.session_base import SESSION
-from user_pack.uesr_model import User, regex_email
+from fast_xabhelper.database import get_session_transaction, hashPassword, get_session
+from fast_xabhelper.session_pack.session_base import SESSION
+from fast_xabhelper.user_pack.uesr_model import User, regex_email
 
-router = APIRouter()
+router = APIRouter(tags=["user"], prefix="/user")
 
 
 def enter(response, id: int) -> str:

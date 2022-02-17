@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit {{ model.name }}</title>
+    <link href="{{ url_for('static', path='/admin_pack/css/styles.css') }}" rel="stylesheet">
+
+</head>
+<body>
+<div>
+    {{ model.name }}
+</div>
+<table>
+    <thead>
+    {# Заголовки#}
+    <tr>
+        {% for title in title_column -%}
+            <th>{{ title }}</th>
+        {% endfor -%}
+    </tr>
+    </thead>
+    {# Запси #}
+    <tbody>
+    <tr>
+        {# Перебираем сотбцы #}
+        {% for title in title_column -%}
+            <th>{{ data_item[title] }}</th>
+        {% endfor -%}
+    </tr>
+    </tbody>
+</table>
+
+<form action="{{ url_update }}" method="post" name="Update">
+    <input type="hidden" name="model_name" value="{{ model.name }}">
+
+    {% for ke, val in extend_column.items() %}
+        <label>
+            <div>
+                {{ ke }}
+                тип {{ val.type }}
+            </div>
+            {# Если boolean #}
+            {% if val.html_input_type == "radio" %}
+                {% if  data_item[ke] == True %}
+                    <input type="radio" name="{{ ke }}-{{ val.type }}" checked> Да
+                    <input type="radio" name="{{ ke }}-{{ val.type }}"> Нет
+                {% else %}
+                    <input type="radio" name="{{ ke }}-{{ val.type }}"> Да
+                    <input type="radio" name="{{ ke }}-{{ val.type }}" checked> Нет
+                {% endif %}
+            {% else %}
+                <input type="{{ val.html_input_type }}" value="{{ data_item[ke] }}" name="{{ ke }}-{{ val.type }}">
+            {% endif %}
+        </label>
+    {% endfor %}
+    <p></p>
+    <input type="submit" value="Отправить изменения">
+</form>
+</body>
+</html>

@@ -1,19 +1,20 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-import session_pack.fast_session
-import user_pack.fast_user
-from database import get_session_transaction
-from user_pack.uesr_model import User
+import fast_xabhelper.session_pack.fast_session
+import fast_xabhelper.user_pack.fast_user
+from admin import UserPanel
+from fast_xabhelper.admin_pack.admin_base import Admin
+from fast_xabhelper.database import get_session_transaction
+from fast_xabhelper.user_pack.uesr_model import User
 
-router = APIRouter()
+router = APIRouter(prefix="/api")
 
-router.include_router(session_pack.fast_session.router,
-                      tags=["session"],
-                      prefix="/session")
-router.include_router(user_pack.fast_user.router,
-                      tags=["user"],
-                      prefix="/user")
+router.include_router(fast_xabhelper.session_pack.fast_session.router, )
+router.include_router(fast_xabhelper.user_pack.fast_user.router, )
+
+# Добавить настройки
+Admin.append_panel(UserPanel())
 
 
 @router.post("/main")

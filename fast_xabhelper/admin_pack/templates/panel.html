@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel {{ model.name }}</title>
+    <link href="{{ url_for('static', path='/admin_pack/css/styles.css') }}" rel="stylesheet">
+</head>
+<body>
+<div>
+    {{ model.name }}
+</div>
+
+
+<table>
+    <thead>
+    {# Заголовки#}
+    <tr>
+        {% for title in title_column -%}
+            <th>{{ title }}</th>
+        {% endfor -%}
+    </tr>
+    </thead>
+    {# Запси #}
+    <tbody>
+    {% for dat in data -%}
+        <tr>
+            {# Перебираем сотбцы #}
+            {% for title in title_column -%}
+                {% if title   == "id" %}
+                    {# Сыылка для редактирования записи #}
+                    <th><a href="{{ model.name + "/edit/"+  dat._data[0][title]|string }}/">{{ dat._data[0][title] }}</a>
+                    </th>
+                {% else %}
+                    <th>{{ dat._data[0][title] }}</th>
+                {% endif -%}
+            {% endfor -%}
+        </tr>
+    {% endfor -%}
+    </tbody>
+</table>
+
+
+</body>
+</html>

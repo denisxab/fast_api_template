@@ -4,7 +4,7 @@ from typing import Optional
 from sqlalchemy import Boolean, Column, Integer, String, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import Base, engine, hashRandom
+from fast_xabhelper.database import Base, engine, hashRandom
 
 
 class User(Base):
@@ -17,7 +17,7 @@ class User(Base):
     is_active = Column(Boolean, default=True, nullable=False)
 
     @staticmethod
-    async def register_new_user(session: AsyncSession, **kwargs):
+    async def register_new_user(session: AsyncSession, **kwargs) -> int:
         """
         :param session:
         :param kwargs:

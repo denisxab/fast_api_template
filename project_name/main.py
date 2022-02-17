@@ -1,14 +1,12 @@
-import uvicorn
-from fastapi import FastAPI
-from fastapi.responses import ORJSONResponse
+"""
+Файл запуска проекта
+"""
+from uvicorn import run
 
-import api
-import static_pack.static_logic
+from settings import mount_env
 
-app = FastAPI(version="1.2", default_response_class=ORJSONResponse)
-
-app.include_router(api.router, prefix="/api")
-app.include_router(static_pack.static_logic.router)
+# Подключаем переменные окружения из настроек
+mount_env()
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    run("app:app", host="0.0.0.0", port=8000, reload=True)

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any, Optional
 
-from database import hashRandom
+from fast_xabhelper.database import hashRandom
 
 
 # Хранилище сессий
@@ -23,7 +23,8 @@ class SESSION:
     def delete_session(cls, response, request) -> Optional[str]:
         hash_: Optional[str] = request.cookies.get("session_id", None)
         if hash_:
-            del cls.data[hash_]
+            if cls.data.get(hash_, None):
+                del cls.data[hash_]
             response.delete_cookie(key="session_id")
         return hash_
 
