@@ -1,3 +1,4 @@
+from os import environ
 from pathlib import Path
 from typing import Optional, Any
 
@@ -10,10 +11,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeMeta
 from starlette.datastructures import FormData
 
-from fast_xabhelper import convert_html_input_type_to_python_type
-from fast_xabhelper.admin_pack.admin_conf import password, user
-from fast_xabhelper.database import hashPassword, get_session_dec, row2dict
+from fast_xabhelper.database import get_session_dec
+from fast_xabhelper.db_helper import row2dict, hashPassword
+from fast_xabhelper.froms import convert_html_input_type_to_python_type
 from fast_xabhelper.session_pack.session_base import SESSION_RAM
+
+ADMIN_USER_NAME: str = environ["ADMIN_USER_NAME"]
+ADMIN_PASSWORD: str = environ["ADMIN_PASSWORD"]
 
 
 def get_tamplate():
@@ -111,7 +115,7 @@ class Admin:
         """
         Проверить аутентификацию
         """
-        if SESSION_RAM.get(request, response, "token_admin") == cls.get_token(password, user):
+        if SESSION_RAM.get(request, response, "token_admin") == cls.get_token(ADMIN_PASSWORD, ADMIN_USER_NAME):
             return True
         return False
 

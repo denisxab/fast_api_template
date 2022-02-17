@@ -1,10 +1,10 @@
-from asyncio import run
 from typing import Optional
 
 from sqlalchemy import Boolean, Column, Integer, String, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fast_xabhelper.database import Base, engine, hashRandom
+from fast_xabhelper.database import Base
+from fast_xabhelper.db_helper import hashRandom
 
 
 class User(Base):
@@ -59,13 +59,3 @@ class User(Base):
 
 
 regex_email: str = "([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+"
-
-
-async def init_models():
-    async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop(User))
-        await conn.run_sync(Base.metadata.create(User))
-
-
-if __name__ == '__main__':
-    run(init_models())

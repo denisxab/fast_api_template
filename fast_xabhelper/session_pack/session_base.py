@@ -5,7 +5,7 @@ from abc import abstractclassmethod
 from datetime import datetime
 from typing import Any, Optional, Callable
 
-from fast_xabhelper.database import hashRandom
+from fast_xabhelper.db_helper import hashRandom
 
 SESSION_NAME = "session_id"
 

@@ -40,7 +40,8 @@ async def main_page(
 # Указываем что возвращаем `HTML`
 @router.get("/",
             response_class=HTMLResponse,
-            include_in_schema=False, )
+            include_in_schema=False,
+            name="index_admin")
 def index(
         request: Request,
         response: Response,
