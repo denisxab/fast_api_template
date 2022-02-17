@@ -7,11 +7,16 @@ from typing import Type
 
 import uvicorn
 from fastapi import FastAPI
+from loguru import logger
 
 from fast_xabhelper.mount_logic import BaseMount
 
 
 class Mange:
+    """
+    Класс для выполнения инструкций
+    """
+
     def __init__(self, mount_onj: Type[BaseMount], _app: FastAPI, path_settings: str = "./settings.py"):
         self.app = _app
         self.mount_onj = mount_onj
@@ -19,7 +24,8 @@ class Mange:
         # Подключить Настройки
         self.include_settings(path_settings)
 
-    def include_settings(self, path_settings: str):
+    @staticmethod
+    def include_settings(path_settings: str):
         """
         Подключить настройки проекта
         """
@@ -33,7 +39,8 @@ class Mange:
         """
         self.mount_onj(self.app).run_mount()
 
-    def include_db(self):
+    @staticmethod
+    def include_db():
         """
         Подключить БД
         """
@@ -73,9 +80,17 @@ class Mange:
         Создать таблицы в БД
         """
         async with engine.begin() as conn:
-            # await conn.run_sync(Base.metadata.drop_all(engine, tables=Photo))
             await conn.run_sync(Base.metadata.create_all)
 
+    @staticmethod
+    async def delete_models(engine, Base):
+        """
+        Создать таблицы в БД
+        """
+        if input("Вы действительно хотите удалить все таблицы ?") == "YES":
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.drop_all())
+            logger.warning("Таблицы удалены")
 
-def main(_app, mtt):
-    mtt.mount_route(_app)
+        else:
+            logger.warning("Таблицы не удалены")

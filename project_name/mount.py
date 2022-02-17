@@ -8,7 +8,6 @@ class Mount(BaseMount):
     """
 
     def mount_route(self):
-        import api
         import fast_xabhelper.admin_pack.fast_admin
         import fast_xabhelper.session_pack.fast_session
         import fast_xabhelper.user_pack.fast_user
@@ -16,8 +15,6 @@ class Mount(BaseMount):
                   name="user_pack")
         add_route(self.app, fast_xabhelper.session_pack.fast_session.router,
                   name="session_pack")
-        add_route(self.app, api.router,
-                  name="api")
         add_route(self.app, fast_xabhelper.admin_pack.fast_admin.router,
                   path_static="/home/denis/PycharmProjects/fastApiProject/fast_xabhelper/admin_pack/static/",
                   absolute=True,
