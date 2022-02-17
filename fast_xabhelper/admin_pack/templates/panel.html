@@ -1,4 +1,4 @@
-{% import "tmp.html" as mc %}
+{% import "macro.html" as mc %}
 
 
 <!DOCTYPE html>
@@ -13,6 +13,9 @@
     {{ model.name }}
 </div>
 
+<div>
+    <a href="{{ url_lambda(-1) }}"> Добавить запись</a>
+</div>
 
 <table>
     <thead>

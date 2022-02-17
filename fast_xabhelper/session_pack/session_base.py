@@ -5,6 +5,8 @@ from abc import abstractclassmethod
 from datetime import datetime
 from typing import Any, Optional, Callable
 
+from mg_file import JsonFile
+
 from fast_xabhelper.database_pack.db_helper import hashRandom
 
 SESSION_NAME = "session_id"
@@ -65,7 +67,7 @@ class SESSION_RAM(SESSION):
     @classmethod
     def crate_session(cls, response) -> str:
         hash_: str = cls._get_hash()
-        cls.data[hash_] = {"time_create": datetime.now()}
+        cls.data[hash_] = {"time_create": str(datetime.now())}
         response.set_cookie(key=SESSION_NAME, value=hash_)
         return hash_
 
@@ -102,3 +104,23 @@ class SESSION_RAM(SESSION):
         if hash_:
             return cls._run_callback_if_exists_hash(response, hash_, lambda: cls.data[hash_])
         return None
+
+
+class SESSION_FILE(SESSION_RAM):
+    file = JsonFile("session.json")
+
+    read_fun = lambda res: res if res else {}
+
+    data = read_fun(file.readFile())
+
+    @classmethod
+    def save(cls):
+        cls.file.writeFile(cls.data)
+
+
+def exit_():
+    """
+    Сохранить данные в сессию.
+    Эта функция должна быть вызвана в менеджере
+    """
+    SESSION_FILE.save()

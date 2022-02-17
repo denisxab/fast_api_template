@@ -48,7 +48,7 @@ class Mange:
 
     def include_mount(self):
         """
-        Подключаем зависимости
+        Подключаем зависимости приложения
         """
         self.mount_onj(self.app).run_mount()
 
@@ -66,10 +66,12 @@ class Mange:
         """
         match command.name:
             case command.init_models.name:
+                self.include_mount()
                 engine, Base = self.include_db()
                 run(self.init_models(engine, Base))
 
             case command.delete_models.name:
+                self.include_mount()
                 engine, Base = self.include_db()
                 run(self.delete_models(engine, Base))
 
@@ -85,6 +87,14 @@ class Mange:
                     """
                     self.include_mount()
 
+                @self.app.on_event("shutdown")
+                async def on_startup():
+                    """
+                    Задачи которы нужно выполнить при запуске сервера
+                    """
+                    from fast_xabhelper.session_pack.session_base import exit_
+                    exit_()
+
             case command.run_dev.name:
                 """
                 if __name__ == "__main__":
@@ -99,6 +109,7 @@ class Mange:
         """
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
+            logger.info(f"Таблицы созданы {list(Base.metadata.tables.keys())}")
 
     @staticmethod
     async def delete_models(engine, Base):
@@ -108,7 +119,7 @@ class Mange:
         if input("Вы действительно хотите удалить все таблицы ?") == "YES":
             async with engine.begin() as conn:
                 await conn.run_sync(Base.metadata.drop_all())
-            logger.warning("Таблицы удалены")
+            logger.warning(f"Таблицы удалены {list(Base.metadata.tables.keys())}")
 
         else:
             logger.warning("Таблицы не удалены")

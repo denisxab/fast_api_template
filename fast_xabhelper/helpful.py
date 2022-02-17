@@ -1,11 +1,6 @@
-from importlib.machinery import ModuleSpec
-from importlib.util import spec_from_file_location, module_from_spec
 from os import environ
 from os import path
-from pathlib import Path
 from shutil import copytree, rmtree
-from types import ModuleType
-from typing import Optional
 from typing import Union, Type
 
 from fastapi import FastAPI, APIRouter
@@ -59,43 +54,3 @@ def add_route(app: Union[FastAPI, APIRouter],
 
 def add_model(model: Type[DeclarativeMeta]):
     environ["ALL_MODEL"] += f":{model.__name__}"
-
-
-def read_file_by_module(infile: str) -> ModuleType:
-    """
-    Импортировать файл как модуль `python`
-
-    @param infile: Путь к `python` файлу
-    @return: Модуль `python`
-    """
-    # указать модуль, который должен быть импортируется относительно пути модуль
-    spec: Optional[ModuleSpec] = spec_from_file_location("my_module", infile)
-    # создает новый модуль на основе спецификации
-    __module: ModuleType = module_from_spec(spec)
-    # выполняет модуль в своем собственном пространстве имен,
-    # когда модуль импортируется или перезагружается.
-    spec.loader.exec_module(__module)
-    return __module
-
-
-def concat_absolute_dir_path(_file: str, _path: str) -> str:
-    """
-    Получить абсолютный путь папки и объединить с другим путем
-
-    :param _file:
-    :param _path:
-    :return:
-    """
-    return str(Path(_file).resolve().parent / _path)
-
-
-def absolute_path_dir(_file: str, back: int = 1) -> Path:
-    """
-    Получить абсолютный путь к своей директории
-
-    :param _file:
-    """
-    res = Path(_file).resolve()
-    for _ in range(back):
-        res = res.parent
-    return res

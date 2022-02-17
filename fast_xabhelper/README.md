@@ -3,7 +3,7 @@
 ```python
 from fastapi import FastAPI
 
-from fast_xabhelper.manage import Mange, comd
+from fast_xabhelper.manage_logic import Mange, comd
 from settings import Mount
 
 app = FastAPI()

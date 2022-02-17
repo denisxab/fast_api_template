@@ -5,7 +5,7 @@ from typing import Union
 
 from sqlalchemy.orm.decl_api import DeclarativeMeta
 
-from fast_xabhelper.froms import convert_sql_type_to_html_input_type
+from fast_xabhelper.database_pack.froms import convert_sql_type_to_html_input_type
 
 
 class ExtendColumn(TypedDict):

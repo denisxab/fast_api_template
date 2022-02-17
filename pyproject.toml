@@ -16,6 +16,7 @@ SQLAlchemy = "^1.4.31"
 databases = "^0.5.5"
 asyncpg = "^0.25.0"
 click = "^8.0.3"
+mg-file = "0.1.8"
 
 
 [tool.poetry.dev-dependencies]

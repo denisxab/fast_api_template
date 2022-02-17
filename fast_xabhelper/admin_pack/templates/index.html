@@ -12,10 +12,12 @@
 </head>
 <body>
 <p>
-Панели:
+    Панели:
 </p>
 {% for ITEM in list_panel -%}
-<a href="panel/{{ITEM}}">{{ITEM}}</a>
+    <p>
+        <a href="panel/{{ ITEM }}">{{ ITEM }}</a>
+    </p>
 {% endfor -%}
 
 </body>

@@ -6,7 +6,7 @@ __all__ = ["mount_env", "AllowedNamesType"]
 from os import environ
 from typing import TypedDict, Optional, Any
 
-from fast_xabhelper.helpful import read_file_by_module
+from mg_file.file.base_file import read_file_by_module
 
 
 class AllowedNamesType(TypedDict):

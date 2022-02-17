@@ -5,15 +5,15 @@ import sys
 from os.path import splitext
 
 import click
+from mg_file.file.base_file import absolute_path_dir, read_file_by_module
 
-from helpful import read_file_by_module, absolute_path_dir
-from manage import comd
+from manage_logic import comd
 
 
 @click.command()
-@click.argument('command', nargs=1, type=click.Choice(comd.__members__))
 @click.argument('path_where_app', nargs=1,
                 type=click.Path(exists=True, dir_okay=False))
+@click.argument('command', nargs=1, type=click.Choice(comd.__members__))
 @click.option("manage_name", "--manage-name", '-mn', default="mg", type=str)
 def run_command(command, path_where_app, manage_name):
     """

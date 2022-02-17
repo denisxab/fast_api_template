@@ -13,8 +13,8 @@ from starlette.datastructures import FormData
 
 from fast_xabhelper.database_pack.database import get_session_dec
 from fast_xabhelper.database_pack.db_helper import row2dict, hashPassword
-from fast_xabhelper.froms import convert_html_input_type_to_python_type
-from fast_xabhelper.session_pack.session_base import SESSION_RAM
+from fast_xabhelper.database_pack.froms import convert_html_input_type_to_python_type
+from fast_xabhelper.session_pack.session_base import SESSION_FILE
 
 ADMIN_USER_NAME: str = environ["ADMIN_USER_NAME"]
 ADMIN_PASSWORD: str = environ["ADMIN_PASSWORD"]
@@ -106,8 +106,8 @@ class Admin:
         """
         Войти
         """
-        hash_: str = SESSION_RAM.crate_session(response)
-        SESSION_RAM._add(hash_, "token_admin", Admin.get_token(Password, UserName))
+        hash_: str = SESSION_FILE.crate_session(response)
+        SESSION_FILE._add(hash_, "token_admin", Admin.get_token(Password, UserName))
         return hash_
 
     @classmethod
@@ -115,7 +115,7 @@ class Admin:
         """
         Проверить аутентификацию
         """
-        if SESSION_RAM.get(request, response, "token_admin") == cls.get_token(ADMIN_PASSWORD, ADMIN_USER_NAME):
+        if SESSION_FILE.get(request, response, "token_admin") == cls.get_token(ADMIN_PASSWORD, ADMIN_USER_NAME):
             return True
         return False
 

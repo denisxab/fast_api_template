@@ -61,4 +61,6 @@ class Mount(BaseMount):
     def mount_admin_panel(self):
         from fast_xabhelper.admin_pack.admin_base import Admin
         from fast_xabhelper.user_pack.admin import UserPanel
+        from photo.admin import PhotoPanel
         Admin.add_panel(UserPanel())
+        Admin.add_panel(PhotoPanel())
