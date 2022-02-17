@@ -1,12 +1,41 @@
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Any
 
+from fastapi import HTTPException
+from fastapi.requests import Request
+from fastapi.responses import Response
+from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeMeta
+from starlette.datastructures import FormData
 
+from fast_xabhelper import convert_html_input_type_to_python_type
 from fast_xabhelper.admin_pack.admin_conf import password, user
 from fast_xabhelper.database import hashPassword, get_session_dec, row2dict
 from fast_xabhelper.session_pack.session_base import SESSION_RAM
+
+
+def get_tamplate():
+    # Указываем директорию, где искать шаблоны
+    return Jinja2Templates(directory=Path(__file__).resolve().parent / "templates")
+
+
+def is_login_admin(request: Request, response: Response):
+    """
+    Проверка авторизованно админа
+
+    Пример использования
+    @app.get("/")
+    def fun(authorized: bool = Depends(is_login_admin)):
+        ...
+    """
+    if not Admin.is_login(request, response):
+        raise HTTPException(
+            status_code=401,
+            detail="Unauthorized"
+        )
+    return True
 
 
 class AdminPanel:
@@ -92,3 +121,14 @@ class Admin:
         Добавить панель в список
         """
         cls.arr_admin[model.name] = model
+
+    @staticmethod
+    async def build_form(request) -> dict[str, Any]:
+        form: FormData = await request.form()
+        form: dict = form._dict
+        del form["model_name"]
+        res = convert_html_input_type_to_python_type(form)
+        # В запросе должен быть id записи
+        if res.get("id", None):
+            return res
+        raise KeyError("Нет ключа id. В запросе должен быть id записи")

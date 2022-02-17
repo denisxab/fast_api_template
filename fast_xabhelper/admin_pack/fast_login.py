@@ -1,8 +1,8 @@
-from fastapi import Request, Form, Response, APIRouter
+from fastapi import Request, Form, Response, APIRouter, Depends
 from starlette.responses import RedirectResponse
 
 import fast_xabhelper.admin_pack.fast_admin
-from fast_xabhelper.admin_pack.admin_base import Admin
+from fast_xabhelper.admin_pack.admin_base import Admin, is_login_admin
 from fast_xabhelper.admin_pack.admin_conf import user, password
 from fast_xabhelper.session_pack.session_base import SESSION_RAM
 
@@ -20,5 +20,9 @@ def login(UserName: str = Form(...), Password: str = Form(...)):
 
 
 @router.get("/logout")
-async def logout_user(response: Response, request: Request):
+async def logout(
+        response: Response,
+        request: Request,
+        authorized: bool = Depends(is_login_admin),
+):
     return {"status": SESSION_RAM.delete_session(response, request)}

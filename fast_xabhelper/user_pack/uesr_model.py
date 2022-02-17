@@ -43,7 +43,7 @@ class User(Base):
         hash_ = hashRandom()
         res = await session.execute(update(User).where(User.id == id_).values(token=hash_))
         # Если получилось обновить данные, вернем хеш
-        if res.rowcount > 1:
+        if res.rowcount >= 1:
             return hash_
         return None
 

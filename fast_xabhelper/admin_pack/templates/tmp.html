@@ -1,0 +1,57 @@
+{% macro create_title_column(_extend_column) -%}
+    {# Создать заголовки таблицы #}
+    {% for k,v in _extend_column.items() -%}
+        <th>{{ k }}
+            <hr>
+            {{ v["type"]|lower }}</th>
+    {% endfor -%}
+{%- endmacro %}
+
+{% macro creacte_body_tabel(_rows,_title_column,_url_lambda) -%}
+
+    {# Создать записи в таблицу #}
+    {% for _rw in _rows -%}
+        <tr>
+            {# Перебираем сотбцы #}
+            {% for _title in _title_column -%}
+                {% if _title   == "id" %}
+                    {# Сыылка для редактирования записи #}
+                    <th><a href="{{ _url_lambda(_rw._data[0][_title]|string) }}/">{{ _rw._data[0][_title] }}</a>
+                    </th>
+                {% else %}
+                    <th>{{ _rw._data[0][_title] }}</th>
+                {% endif -%}
+            {% endfor -%}
+        </tr>
+    {% endfor -%}
+{%- endmacro %}
+
+
+{% macro editor_db(_url_update, _model, _extend_column, _data_item) -%}
+    <form action="{{ _url_update }}" method="post" name="Update">
+        <input type="hidden" name="model_name" value="{{ _model.name }}">
+
+        {% for ke, val in _extend_column.items() %}
+            <label>
+                <div>
+                    {{ ke }}
+                </div>
+                {# Если boolean #}
+                {% if val.html_input_type == "radio" %}
+                    {% if  _data_item[ke] == True %}
+                        <input type="radio" name="{{ ke }}-{{ val.html_input_type }}" checked value="on"> Да
+                        <input type="radio" name="{{ ke }}-{{ val.html_input_type }}" value="off"> Нет
+                    {% else %}
+                        <input type="radio" name="{{ ke }}-{{ val.html_input_type }}" value="on"> Да
+                        <input type="radio" name="{{ ke }}-{{ val.html_input_type }}" checked value="off"> Нет
+                    {% endif %}
+                {% else %}
+                    <input type="{{ val.html_input_type }}" value="{{ _data_item[ke] }}"
+                           name="{{ ke }}-{{ val.html_input_type }}">
+                {% endif %}
+            </label>
+        {% endfor %}
+        <p></p>
+        <input type="submit" value="Отправить изменения">
+    </form>
+{%- endmacro %}

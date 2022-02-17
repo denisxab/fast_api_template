@@ -33,7 +33,7 @@ def mount_env():
     # Имя админа
     environ["ADMIN_USER_NAME"] = "denis"
     # Пароль от админ панели
-    environ["ADMIN_PASSWORD"] = "321"
+    environ["ADMIN_PASSWORD"] = "123"
     """
     Все добавленные приложения
     """

@@ -1,3 +1,6 @@
+{% import "tmp.html" as mc %}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,27 +18,12 @@
     <thead>
     {# Заголовки#}
     <tr>
-        {% for title in title_column -%}
-            <th>{{ title }}</th>
-        {% endfor -%}
+        {{ mc.create_title_column(extend_column) }}
     </tr>
     </thead>
     {# Запси #}
     <tbody>
-    {% for dat in data -%}
-        <tr>
-            {# Перебираем сотбцы #}
-            {% for title in title_column -%}
-                {% if title   == "id" %}
-                    {# Сыылка для редактирования записи #}
-                    <th><a href="{{ url_lambda(dat._data[0][title]|string) }}/">{{ dat._data[0][title] }}</a>
-                    </th>
-                {% else %}
-                    <th>{{ dat._data[0][title] }}</th>
-                {% endif -%}
-            {% endfor -%}
-        </tr>
-    {% endfor -%}
+    {{ mc.creacte_body_tabel(data,title_column,url_lambda) }}
     </tbody>
 </table>
 

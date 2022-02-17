@@ -3,8 +3,7 @@ from fastapi.responses import HTMLResponse
 
 import fast_xabhelper.admin_pack.fast_edit
 import fast_xabhelper.admin_pack.fast_edit
-from fast_xabhelper.admin_pack.admin_base import Admin
-from fast_xabhelper.admin_pack.admin_conf import get_tamplate
+from fast_xabhelper.admin_pack.admin_base import Admin, get_tamplate, is_login_admin
 from fast_xabhelper.helpful import add_route
 
 router = APIRouter(prefix="/panel", tags=["admin"])
@@ -14,14 +13,20 @@ add_route(router,
           name="edit_admin")
 
 
-@router.get("/{model_name}", response_class=HTMLResponse, name="main_admin")
-async def panel_model(request: Request, model_name: str, templates=Depends(get_tamplate)):
+@router.api_route("/{model_name}",
+                  methods=["GET", "POST"],
+                  response_class=HTMLResponse,
+                  name="main_admin_panel")
+async def panel_model(
+        request: Request, model_name: str,
+        authorized: bool = Depends(is_login_admin),
+        templates=Depends(get_tamplate)
+):
     """
     Лента данных админ панели
     """
     model = Admin.arr_admin[model_name]
     extend_column, title_column = model.get_colums()
-
     context = {"request": request,
                "model": Admin.arr_admin[model_name],
                "title_column": title_column,
@@ -30,5 +35,4 @@ async def panel_model(request: Request, model_name: str, templates=Depends(get_t
                "url_lambda": lambda data:
                request.url_for("edit", model_name=model.name, id_=data)
                }
-
     return templates.TemplateResponse("panel.html", context)

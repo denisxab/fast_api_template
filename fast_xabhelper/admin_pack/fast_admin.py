@@ -1,12 +1,9 @@
-from pathlib import Path
-
 from fastapi import APIRouter, Request, Depends, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 import fast_xabhelper.admin_pack.fast_login
 import fast_xabhelper.admin_pack.fast_panel
-from fast_xabhelper.admin_pack.admin_base import Admin
-from fast_xabhelper.admin_pack.admin_conf import get_tamplate
+from fast_xabhelper.admin_pack.admin_base import Admin, get_tamplate, is_login_admin
 from fast_xabhelper.helpful import add_route
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -20,8 +17,16 @@ add_route(router,
           name="login_admin")
 
 
-@router.api_route("/main", methods=["GET", "POST"], response_class=HTMLResponse, name="main_admin")
-async def main_page(request: Request, templates=Depends(get_tamplate)):
+@router.api_route("/main",
+                  methods=["GET", "POST"],
+                  include_in_schema=False,
+                  response_class=HTMLResponse,
+                  name="main_admin")
+async def main_page(
+        request: Request,
+        templates=Depends(get_tamplate),
+        authorized: bool = Depends(is_login_admin),
+):
     """
     Главная страница с админ панелями
     """
@@ -33,8 +38,14 @@ async def main_page(request: Request, templates=Depends(get_tamplate)):
 
 
 # Указываем что возвращаем `HTML`
-@router.get("/", response_class=HTMLResponse)
-def index(request: Request, response: Response, templates=Depends(get_tamplate)):
+@router.get("/",
+            response_class=HTMLResponse,
+            include_in_schema=False, )
+def index(
+        request: Request,
+        response: Response,
+        templates=Depends(get_tamplate)
+):
     if not Admin.is_login(request, response):
         return templates.TemplateResponse("login.html",
                                           {"request": request,

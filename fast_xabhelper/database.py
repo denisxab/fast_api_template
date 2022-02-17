@@ -1,12 +1,13 @@
 from hashlib import sha512
 from os import environ
 from random import randint
-from typing import Any, Union
+from typing import Any, Union, TypedDict
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, DeclarativeMeta
-from sqlalchemy.sql.type_api import TypeEngine
+
+from fast_xabhelper.froms import convert_sql_type_to_html_input_type
 
 engine = create_async_engine(
     # "postgresql+asyncpg://postgres:root@localhost/fast"
@@ -40,43 +41,42 @@ def get_session_dec(fun):
     return wrapper
 
 
+class ExtendColumn(TypedDict):
+    # Тип
+    type: Any
+    # Тип для html формы
+    html_input_type: str
+    # Описание
+    description: str
+    # Внешние связи
+    foreign_keys: Any
+    # Разрешить Null
+    nullable: bool
+    # Первичный ключ
+    primary_key: Any
+    # Уникальность
+    unique: bool
+
+
 def row2dict(row: DeclarativeMeta, list_display: list) -> tuple[dict[Any, dict[str, Any]], Union[list[Any], Any]]:
     """
     Получить имена атрибутов в модели БД
     """
-    d = {}
-    title = []
+    extend_column: dict[str, Any] = {}
+    title_column: list[str] = []
     for column in row.__table__.columns:
         if column.name in list_display:
-            title.append(column.name)
-            d[column.name] = {
-                # Тип
-                "type": column.type,
-                # Тип для html формы
-                "html_input_type": get_html_type(column.type),
-                # Описание
-                "description": column.description,
-                # Внешние связи
-                "foreign_keys": column.foreign_keys,
-                # Разрешить Null
-                "nullable": column.nullable,
-                # Первичный ключ
-                "primary_key": column.primary_key,
-                # Уникальность
-                "unique": column.unique,
-            }
-    return d, title
-
-
-CONVERT_SQL_TYPE_TO_HTML_INPUT_TYPE: dict[str, str] = {
-    'INTEGER': "number",
-    "VARCHAR": "text",
-    "BOOLEAN": "radio"
-}
-
-
-def get_html_type(sql_type: TypeEngine):
-    return CONVERT_SQL_TYPE_TO_HTML_INPUT_TYPE.get(str(sql_type), None)
+            title_column.append(column.name)
+            extend_column[column.name] = ExtendColumn(
+                type=column.type,
+                html_input_type=convert_sql_type_to_html_input_type(column.type),
+                description=column.description,
+                foreign_keys=column.foreign_keys,
+                nullable=column.nullable,
+                primary_key=column.primary_key,
+                unique=column.unique,
+            )
+    return extend_column, title_column
 
 
 # Захешировать пароль
