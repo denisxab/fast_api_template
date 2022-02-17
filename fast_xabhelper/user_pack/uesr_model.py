@@ -17,7 +17,7 @@ class User(Base):
     is_active = Column(Boolean, default=True, nullable=False)
 
     @staticmethod
-    async def register_new_user(session: AsyncSession, **kwargs) -> int:
+    async def register(session: AsyncSession, **kwargs) -> int:
         """
         :param session:
         :param kwargs:
@@ -63,8 +63,8 @@ regex_email: str = "([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2
 
 async def init_models():
     async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+        # await conn.run_sync(Base.metadata.drop(User))
+        await conn.run_sync(Base.metadata.create(User))
 
 
 if __name__ == '__main__':

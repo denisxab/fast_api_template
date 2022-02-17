@@ -28,7 +28,7 @@
             {% for title in title_column -%}
                 {% if title   == "id" %}
                     {# Сыылка для редактирования записи #}
-                    <th><a href="{{ model.name + "/edit/"+  dat._data[0][title]|string }}/">{{ dat._data[0][title] }}</a>
+                    <th><a href="{{ url_lambda(dat._data[0][title]|string) }}/">{{ dat._data[0][title] }}</a>
                     </th>
                 {% else %}
                     <th>{{ dat._data[0][title] }}</th>

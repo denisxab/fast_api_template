@@ -11,3 +11,23 @@ table {
     border-radius: 10px;
     border-collapse: collapse;
 }
+
+#root {
+    text-align: center;
+    background: #7f99cc;
+
+}
+
+.right_text {
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+#login {
+    border: #4c5448 3px solid;
+    width: 300px;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 3px;
+}

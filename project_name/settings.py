@@ -26,7 +26,7 @@ def mount_env():
     Статические файлы
     """
     # Нудно ли копировать статические файлы
-    environ["COPY_STATIC"] = "True"
+    environ["COPY_STATIC"] = "False"
     """
     Админ панель
     """
@@ -34,3 +34,7 @@ def mount_env():
     environ["ADMIN_USER_NAME"] = "denis"
     # Пароль от админ панели
     environ["ADMIN_PASSWORD"] = "321"
+    """
+    Все добавленные приложения
+    """
+    environ["ALL_APP"] = ""

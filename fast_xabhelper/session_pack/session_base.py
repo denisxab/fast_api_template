@@ -1,61 +1,104 @@
+"""
+Файл для работы с сессиями
+"""
+from abc import abstractclassmethod
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, Optional, Callable
 
 from fast_xabhelper.database import hashRandom
 
+SESSION_NAME = "session_id"
 
-# Хранилище сессий
+
 class SESSION:
     data: dict[str, Any] = {}
 
     @classmethod
-    def __get_hash(cls) -> str:
+    def _get_hash(cls) -> str:
         return hashRandom()
+
+    @abstractclassmethod
+    def _run_callback_if_exists_hash(cls, response, hash_, callback: Callable):
+        """Поучить данные по ключу"""
+        ...
+
+    @abstractclassmethod
+    def crate_session(cls, response) -> str:
+        """Создать сессию"""
+        ...
+
+    @abstractclassmethod
+    def delete_session(cls, response, request) -> Optional[str]:
+        """Удалить сессию"""
+        ...
+
+    @abstractclassmethod
+    def _add(cls, hash_: str, key: str, value: Any):
+        """Добавить данные в сессию"""
+        ...
+
+    @abstractclassmethod
+    def get(cls, request, response, key: str) -> Any:
+        """Получить данные из сессии"""
+        ...
+
+    @abstractclassmethod
+    def keys(cls, request, response):
+        """Получить ключи из сессии"""
+        ...
+
+    @abstractclassmethod
+    def items(cls, request, response):
+        """Получить все данные из сессии"""
+        ...
+
+
+class SESSION_RAM(SESSION):
+
+    @classmethod
+    def _run_callback_if_exists_hash(cls, response, hash_, callback: Callable):
+        if cls.data.get(hash_, None):
+            return callback()
+        response.delete_cookie(key=SESSION_NAME)
+        return "delete session"
 
     @classmethod
     def crate_session(cls, response) -> str:
-        hash_ = cls.__get_hash()
+        hash_: str = cls._get_hash()
         cls.data[hash_] = {"time_create": datetime.now()}
-        response.set_cookie(key="session_id", value=hash_)
+        response.set_cookie(key=SESSION_NAME, value=hash_)
         return hash_
 
     @classmethod
     def delete_session(cls, response, request) -> Optional[str]:
-        hash_: Optional[str] = request.cookies.get("session_id", None)
+        hash_: Optional[str] = request.cookies.get(SESSION_NAME, None)
         if hash_:
             if cls.data.get(hash_, None):
                 del cls.data[hash_]
-            response.delete_cookie(key="session_id")
+            response.delete_cookie(key=SESSION_NAME)
         return hash_
 
     @classmethod
-    def add(cls, hash_: str, key: str, value: Any):
+    def _add(cls, hash_: str, key: str, value: Any):
         cls.data[hash_][key] = value
 
     @classmethod
-    def get(cls, request, key: str) -> Any:
-        hash_: Optional[str] = request.cookies.get("session_id", None)
+    def get(cls, request, response, key: str) -> Any:
+        hash_: Optional[str] = request.cookies.get(SESSION_NAME, None)
         if hash_:
-            if cls.data.get(hash_, None):
-                return cls.data[hash_].get(key, None)
+            return cls._run_callback_if_exists_hash(response, hash_, lambda: cls.data[hash_].get(key, None))
         return None
 
     @classmethod
     def keys(cls, request, response):
-        hash_: Optional[str] = request.cookies.get("session_id", None)
+        hash_: Optional[str] = request.cookies.get(SESSION_NAME, None)
         if hash_:
-            if cls.data.get(hash_, None):
-                return list(cls.data[hash_].keys())
-            response.delete_cookie(key="session_id")
-            return "delete session"
+            return cls._run_callback_if_exists_hash(response, hash_, lambda: list(cls.data[hash_].keys()))
         return None
 
     @classmethod
     def items(cls, request, response):
-        hash_: Optional[str] = request.cookies.get("session_id", None)
+        hash_: Optional[str] = request.cookies.get(SESSION_NAME, None)
         if hash_:
-            if cls.data.get(hash_, None):
-                return cls.data[hash_]
-            response.delete_cookie(key="session_id")
-            return "delete session"
+            return cls._run_callback_if_exists_hash(response, hash_, lambda: cls.data[hash_])
         return None
