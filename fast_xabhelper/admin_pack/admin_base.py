@@ -120,7 +120,7 @@ class Admin:
         return False
 
     @classmethod
-    def append_panel(cls, model: AdminPanel):
+    def add_panel(cls, model: AdminPanel):
         """
         Добавить панель в список
         """

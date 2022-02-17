@@ -33,6 +33,17 @@ def add_route(app: Union[FastAPI, APIRouter],
               name: str,
               path_static: str = "",
               absolute: bool = False):
+    """
+    Добавить путь в приложение или в другой путь. При этом если COPY_STATIC="True"`
+    будет происходить копирование статических файлов из пути `path_static`
+
+    @param app: Главное приложение или любой путь
+    @param route: Путь
+    @param name: Имя папки в котором расположен путь
+    @param path_static: Путь к статическим файлам, они будут копированные если
+    переменная окружения `COPY_STATIC="True"`
+    @param absolute: Вы можете указать что `path_static` имеет абсолютный путь
+    """
     # Добавить приложение в список
     environ["ALL_APP"] += f":{name}"
     # Добавить путь в приложение
@@ -46,7 +57,7 @@ def add_route(app: Union[FastAPI, APIRouter],
 
 
 def add_model(model: Type[DeclarativeMeta]):
-    ...
+    environ["ALL_MODEL"] += f":{model.__name__}"
 
 
 def read_file_by_module(infile: str) -> ModuleType:

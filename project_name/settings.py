@@ -18,8 +18,8 @@ ROOT_DIR = "/".join(str(BASE_DIR).split('/')[:-1])
 """
 Статические файлы
 """
-COPY_STATIC = "False"
 # Нудно ли копировать статические файлы
+COPY_STATIC = "True"
 """
 Админ панель
 """
@@ -27,7 +27,4 @@ COPY_STATIC = "False"
 ADMIN_USER_NAME = "denis"
 # Пароль от админ панели
 ADMIN_PASSWORD = "123"
-"""
-Все добавленные приложения
-"""
-ALL_APP = ""
+

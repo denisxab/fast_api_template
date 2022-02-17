@@ -1,60 +1,70 @@
 """
 Файл для подключения зависимостей к приложению
 """
-from abc import abstractstaticmethod
+from abc import abstractmethod
 from os import environ
+
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from loguru import logger
 
 
 class BaseMount:
     """
-    Шаблон для подключения различных вещей к приложению
+    Шаблон для подключения различных вещей к приложению.
+
+    Производите импорты `fast_xabhelper` внутри методов
     """
 
-    @abstractstaticmethod
-    def mount_model():
+    def __init__(self, _app: FastAPI):
+        self.app = _app
+
+    @abstractmethod
+    def mount_model(self):
         """
         Подключаем модели
         """
 
-    @staticmethod
-    def mount_other_dependents(_app):
+    @abstractmethod
+    def mount_other_dependents(self):
         """
         Подключение зависимостей к приложению
         """
         ...
 
-    @abstractstaticmethod
-    def mount_route(_app):
+    @abstractmethod
+    def mount_route(self):
         """
         Подключение путей к приложению
         """
         ...
 
-    @abstractstaticmethod
-    def mount_static(_app):
-        """
-        Подключение статических файлов
-        """
-        ...
+    def mount_static(self):
+        self.app.mount(
+            # `URL` путь
+            "/static",
+            # Директория в которой искать статические файлы
+            StaticFiles(directory="static"),
+            # Это имя будем использовать в
+            # `{{ url_for('$name$', path='/$Файл$.css') ) }}`
+            name="static")
 
-    @abstractstaticmethod
-    def mount_admin_panel():
+    @abstractmethod
+    def mount_admin_panel(self):
         """
         Подключение админ панелей
         """
         ...
 
-    @classmethod
-    def run_mount(cls, _app):
-        cls.mount_route(_app)
-        print(environ["ALL_APP"])
-        cls.mount_model()
-        cls.mount_admin_panel()
-        cls.mount_other_dependents(_app)
-        cls.mount_static(_app)
-
-
-def on_startup_mount(app):
-    """
-    При старте подключить зависимости
-    """
+    @abstractmethod
+    def run_mount(self):
+        """
+        Запустить монтирование
+        """
+        self.mount_route()
+        logger.info(f'APP-{environ["ALL_APP"]}')
+        self.mount_model()
+        logger.info(f'MODEL-{environ["ALL_MODEL"]}')
+        self.mount_admin_panel()
+        self.mount_other_dependents()
+        self.mount_static()
