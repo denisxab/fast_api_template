@@ -3,13 +3,26 @@
 """
 
 from asyncio import run
+from enum import Enum
 from typing import Type
 
 import uvicorn
 from fastapi import FastAPI
 from loguru import logger
 
-from fast_xabhelper.mount_logic import BaseMount
+from mount_logic import BaseMount
+
+
+class comd(Enum):
+    """Доступные команды"""
+    # Инициализация проекта
+    init_app = "init"
+    # Создать все таблицы на основе моделей
+    init_models = "init_models"
+    # Удалить все таблицы
+    delete_models = "delete_models"
+    # Запустить `ASGI` сервер `uvicorn`
+    run_dev = "run_dev"
 
 
 class Mange:
@@ -44,18 +57,23 @@ class Mange:
         """
         Подключить БД
         """
-        from fast_xabhelper.database import engine, Base
+        from fast_xabhelper.database_pack.database import engine, Base
         return engine, Base
 
-    def main(self, command: str):
+    def run_command(self, command: comd):
         """
         Главный метод запуска сценария
         """
-        match command:
-            case "init_models":
+        match command.name:
+            case command.init_models.name:
                 engine, Base = self.include_db()
                 run(self.init_models(engine, Base))
-            case "init":
+
+            case command.delete_models.name:
+                engine, Base = self.include_db()
+                run(self.delete_models(engine, Base))
+
+            case command.init_app.name:
                 """
                 Не запускайте эту команду в if __name__ == "__main__" !
                 """
@@ -67,7 +85,7 @@ class Mange:
                     """
                     self.include_mount()
 
-            case "run_dev":
+            case command.run_dev.name:
                 """
                 if __name__ == "__main__":
                     mg.main("run_dev")

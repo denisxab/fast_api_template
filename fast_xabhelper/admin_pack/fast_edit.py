@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeMeta
 
 from fast_xabhelper.admin_pack.admin_base import Admin, AdminPanel, get_tamplate, is_login_admin
-from fast_xabhelper.database import get_session_transaction
+from fast_xabhelper.database_pack.database import get_session_transaction
 
 router = APIRouter(prefix="/edit", tags=["admin"])
 

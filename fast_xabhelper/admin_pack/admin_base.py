@@ -11,8 +11,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeMeta
 from starlette.datastructures import FormData
 
-from fast_xabhelper.database import get_session_dec
-from fast_xabhelper.db_helper import row2dict, hashPassword
+from fast_xabhelper.database_pack.database import get_session_dec
+from fast_xabhelper.database_pack.db_helper import row2dict, hashPassword
 from fast_xabhelper.froms import convert_html_input_type_to_python_type
 from fast_xabhelper.session_pack.session_base import SESSION_RAM
 

@@ -2,6 +2,7 @@ from importlib.machinery import ModuleSpec
 from importlib.util import spec_from_file_location, module_from_spec
 from os import environ
 from os import path
+from pathlib import Path
 from shutil import copytree, rmtree
 from types import ModuleType
 from typing import Optional
@@ -75,3 +76,26 @@ def read_file_by_module(infile: str) -> ModuleType:
     # когда модуль импортируется или перезагружается.
     spec.loader.exec_module(__module)
     return __module
+
+
+def concat_absolute_dir_path(_file: str, _path: str) -> str:
+    """
+    Получить абсолютный путь папки и объединить с другим путем
+
+    :param _file:
+    :param _path:
+    :return:
+    """
+    return str(Path(_file).resolve().parent / _path)
+
+
+def absolute_path_dir(_file: str, back: int = 1) -> Path:
+    """
+    Получить абсолютный путь к своей директории
+
+    :param _file:
+    """
+    res = Path(_file).resolve()
+    for _ in range(back):
+        res = res.parent
+    return res

@@ -21,6 +21,8 @@ class AllowedNamesType(TypedDict):
     BASE_DIR: Optional[str]
     # Полный путь к проекту
     ROOT_DIR: Optional[str]
+    # Путь к папке со статическими файлами
+    STATIC_PATH: Optional[str]
     """
     Админ панель
     """
@@ -52,6 +54,7 @@ AllowedNames: dict[str, Any] = AllowedNamesType(
     ADMIN_PASSWORD=None,
     ALL_APP="",
     ALL_MODEL="",
+    STATIC_PATH=None,
     COPY_STATIC=True,
 )
 
@@ -80,4 +83,6 @@ def __read_settings_file(_path: str):
 
     # Для не переопределенных переменных берем значения по умолчанию
     for _no_implemented in set(AllowedNames.keys()) - implemented:
+        if AllowedNames[_no_implemented] is None:
+            raise KeyError(f"Не реализована переменная {_no_implemented}")
         environ[_no_implemented] = str(AllowedNames[_no_implemented])

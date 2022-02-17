@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, ForeignKey, String
+from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
-from fast_xabhelper.database import Base
+from fast_xabhelper.database_pack.castom_sql_type import ImageField
+from fast_xabhelper.database_pack.database import Base
 
 
 class Photo(Base):
@@ -9,7 +10,7 @@ class Photo(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
-    path = Column(String(400), nullable=False, index=True)
+    path = Column(ImageField(400), nullable=False, index=True)
 
     user = relationship("User", backref="photo")
 

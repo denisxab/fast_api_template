@@ -3,18 +3,22 @@
 ```python
 from fastapi import FastAPI
 
-from fast_xabhelper.manage import Mange
-from mount import Mount
+from fast_xabhelper.manage import Mange, comd
+from settings import Mount
 
 app = FastAPI()
 
 mg = Mange(Mount, app)
 # Настраиваем проект
-mg.main("init")
+mg.run_command(comd.init_app)
 
 if __name__ == "__main__":
     # Запускаем проект
-    mg.main("run_dev")
+    mg.run_command(comd.run_dev)
+```
+
+```bash
+python fast_xabhelper/console_manage.py run_dev  project_name/main.py
 ```
 
 # Создать настройки
@@ -25,7 +29,8 @@ if __name__ == "__main__":
 
 # Создать файл монтирования
 
-Все подключения должны производиться в файле `mount.py` для этого нужно реализовать логику класса `BaseMount`
+Все подключения должны производиться в файле настроек `./settings.py` для этого нужно реализовать логику
+класса `BaseMount`
 
 Вы можете примонтировать:
 

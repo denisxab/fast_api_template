@@ -25,7 +25,6 @@ class BaseMount:
         Подключаем модели
         """
 
-    @abstractmethod
     def mount_other_dependents(self):
         """
         Подключение зависимостей к приложению
@@ -44,7 +43,7 @@ class BaseMount:
             # `URL` путь
             "/static",
             # Директория в которой искать статические файлы
-            StaticFiles(directory="static"),
+            StaticFiles(directory=environ["STATIC_PATH"]),
             # Это имя будем использовать в
             # `{{ url_for('$name$', path='/$Файл$.css') ) }}`
             name="static")
@@ -56,7 +55,6 @@ class BaseMount:
         """
         ...
 
-    @abstractmethod
     def run_mount(self):
         """
         Запустить монтирование

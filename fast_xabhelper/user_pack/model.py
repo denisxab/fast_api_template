@@ -3,8 +3,8 @@ from typing import Optional
 from sqlalchemy import Boolean, Column, Integer, String, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fast_xabhelper.database import Base
-from fast_xabhelper.db_helper import hashRandom
+from fast_xabhelper.database_pack.database import Base
+from fast_xabhelper.database_pack.db_helper import hashRandom
 
 
 class User(Base):
