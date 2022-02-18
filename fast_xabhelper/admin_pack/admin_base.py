@@ -135,7 +135,7 @@ class Admin:
         return False
 
     @classmethod
-    def add_panel(cls, model: AdminPanel):
+    def add_admin_panel(cls, model: AdminPanel):
         """
         Добавить панель в список
         """

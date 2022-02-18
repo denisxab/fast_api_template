@@ -4,13 +4,13 @@ from fastapi.responses import HTMLResponse
 import fast_xabhelper.admin_pack.fast_edit
 import fast_xabhelper.admin_pack.fast_edit
 from fast_xabhelper.admin_pack.admin_base import Admin, get_tamplate, is_login_admin
-from fast_xabhelper.helpful import add_route
+from fast_xabhelper.mount_logic import BaseMount
 
 router = APIRouter(prefix="/panel", tags=["admin"])
 
-add_route(router,
-          fast_xabhelper.admin_pack.fast_edit.router,
-          name="edit_admin")
+BaseMount.add_route(router,
+                    fast_xabhelper.admin_pack.fast_edit.router,
+                    name="edit_admin")
 
 
 @router.api_route("/{model_name}",

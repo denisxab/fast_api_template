@@ -1,6 +1,7 @@
 """
 Файл для работы с сессиями
 """
+import os
 from abc import abstractclassmethod
 from datetime import datetime
 from typing import Any, Optional, Callable
@@ -111,7 +112,7 @@ class SESSION_FILE(SESSION_RAM):
     Сессия будет взята из файла, и будет записана в файл
     после завершения сервера
     """
-    file = JsonFile("session.json")
+    file = JsonFile(os.path.join(os.environ["BASE_DIR"], "session.json"))
 
     read_fun = lambda _x: _x if _x else {}
 
