@@ -41,7 +41,7 @@ class Mount(BaseMount):
 
     def mount_route(self):
         import fast_xabhelper.admin_pack.fast_admin
-        import fast_xabhelper.se.fast_session
+        import fast_xabhelper.session_pack.fast_session
         import fast_xabhelper.user_pack.fast_user
         add_route(self.app, fast_xabhelper.user_pack.fast_user.router,
                   name="user_pack")

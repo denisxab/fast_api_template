@@ -39,6 +39,9 @@ class BaseMount:
         ...
 
     def mount_static(self):
+        """
+        Подключить папку со статическими файлами
+        """
         self.app.mount(
             # `URL` путь
             "/static",
@@ -47,6 +50,12 @@ class BaseMount:
             # Это имя будем использовать в
             # `{{ url_for('$name$', path='/$Файл$.css') ) }}`
             name="static")
+
+    def mount_src(self):
+        """
+
+        :return:
+        """
 
     @abstractmethod
     def mount_admin_panel(self):
