@@ -118,7 +118,7 @@ class BaseMount:
                 concat_absolute_dir_path(__file__, "svelte_pack"),
                 f" --env PathOutStatic={PathOutStatic}" if PathOutStatic else "",
                 f" --env PathSrc={PathSrc}" if PathSrc else "",
-                f" --env PathByUrl={PathByUrl}" if PathByUrl else f" --env PathByUrl=/static/{NameApp}",
+                f" --env PathByUrl={PathByUrl}" if PathByUrl else f" --env PathByUrl=/static/{NameApp}/public",
                 f" --env PathApp={PathApp}" if PathApp else "",
                 f" --env AutoComplete=true" if AutoComplete else " --env AutoComplete=false",
                 f" --env PathOutTemplate={PathOutTemplate}" if PathOutTemplate else "",

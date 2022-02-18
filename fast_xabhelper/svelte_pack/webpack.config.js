@@ -36,7 +36,7 @@ class Main {
          */
 
         this.isDev = isDev;
-        this.PathOutStatic = PathOutStatic ? PathOutStatic : path.resolve(PathApp, 'static');
+        this.PathOutStatic = PathOutStatic ? PathOutStatic : path.resolve(PathApp, 'static/public');
         this.PathSrc = PathSrc ? PathSrc : path.resolve(PathApp, 'src');
         this.PathByUrl = PathByUrl ? PathByUrl : '/static/public';
         this.PathOutTemplate = PathOutTemplate ? PathOutTemplate : path.resolve(PathApp, 'templates')
