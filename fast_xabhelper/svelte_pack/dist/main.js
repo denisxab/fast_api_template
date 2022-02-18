@@ -233,4 +233,4 @@ class App extends svelte_internal__WEBPACK_IMPORTED_MODULE_0__.SvelteComponent {
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=main.bundle.js.map
+//# sourceMappingURL=main.js.map

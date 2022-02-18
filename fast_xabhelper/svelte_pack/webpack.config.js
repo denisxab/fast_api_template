@@ -16,11 +16,14 @@ const TerserPlugin = require('terser-webpack-plugin');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
 class Main {
-    constructor(isDev, PathApp,
+    constructor(isDev,
+                PathApp,
                 PathOutStatic = null,
                 PathSrc = null,
                 PathByUrl = null,
-                PathOutTemplate = null
+                PathOutTemplate = null,
+                AutoComplete = 'false',
+                MainStaticPath = null
     ) {
         /*
         По умолчанию подразумевается следующая архитектура приложения
@@ -37,9 +40,25 @@ class Main {
         this.PathSrc = PathSrc ? PathSrc : path.resolve(PathApp, 'src');
         this.PathByUrl = PathByUrl ? PathByUrl : '/static/public';
         this.PathOutTemplate = PathOutTemplate ? PathOutTemplate : path.resolve(PathApp, 'templates')
+        this.AutoComplete = AutoComplete === "true";
+        this.MainStaticPath = MainStaticPath
 
-        console.log(this.PathApp);
+        console.log(
+            {
+                "PathOutStatic": this.PathOutStatic,
+                "PathSrc": this.PathSrc,
+                "PathByUrl": this.PathByUrl,
+                "PathOutTemplate": this.PathOutTemplate,
+                "AutoComplete": this.AutoComplete,
+                "MainStaticPath": this.MainStaticPath
+            }
+        )
+
         this.res = {
+            // Следить за изменением файлов, и автоматически перекомпилировать их. Консоль блокируется на момент слежки
+            // (true/false)
+            watch: this.AutoComplete,
+
             // Режим работы [production(сжатие кода)/development]
             mode: isDev ? 'development' : 'production',
 
@@ -134,15 +153,11 @@ class Main {
             // Плагин для автоматического подключения статических файлов в `HTML` шаблон
             new HTMLWebpackPlugin({
                 // Указать какой `HTML` шаблон взять за основу
-                template: path.resolve(
-                    __dirname,
-                    `${this.PathSrc}/index.template.html`,
-                ),
+                template: `${this.PathSrc}/index.template.html`,
+
                 // Куда поместить итоговый `HTMl` файл
-                filename: path.resolve(
-                    __dirname,
-                    `${this.PathOutTemplate}/index.html`,
-                ),
+                filename: `${this.PathOutTemplate}/index.html`,
+
                 // Оптимизировать сборку `HTMl`файла если не режим разработки
                 minify: {
                     // Варианты: https://github.com/terser/html-minifier-terser#options-quick-reference
@@ -154,6 +169,7 @@ class Main {
                     removeStyleLinkTypeAttributes: !this.isDev,
                     useShortDoctype: !this.isDev,
                 },
+
             }),
             // Удалять старые версии статических файлов из `output`
             new CleanWebpackPlugin(),
@@ -172,10 +188,21 @@ class Main {
             //         },
             //     ]
             // )
+
         ];
-        // Если режим разработки то показать размер статических файлов
+        // Если режим разработки, то показать размер статических файлов
         if (!this.isDev) {
             plug.push(new BundleAnalyzerPlugin());
+        }
+        // Если есть общая папка со всеми стати, и у нас стоит автокомпеляция, то
+        // мы будем копировать имения статических файлов в главною директорию со статическими файлами
+        if (this.MainStaticPath && this.AutoComplete) {
+            plug.push(new CopyWebpackPlugin({
+                    patterns: [
+                        {from: this.PathOutStatic, to: this.MainStaticPath},
+                    ],
+                })
+            )
         }
         return plug;
     }
@@ -187,7 +214,7 @@ class Main {
     Entry() {
         return {
             // Его мы подключаем в `indexs.html`
-            main: path.resolve(__dirname, `${this.PathSrc}/main.js`),
+            main: `${this.PathSrc}/main.js`,
             // Путь к другому файлу для компиляции
             // other: path.resolve(__dirname, `src/other.tsx`)
         };
@@ -200,7 +227,7 @@ class Main {
             // `contenthash` будет создавать хеш файла для индивидуальности
             filename: this.filename('js'),
             // Путь куда помещаются скомпилированные файлы
-            path: path.resolve(__dirname, `${this.PathOutStatic}/`), // 127.0.0.1/static/frontend_react/public/ откуда подаются файлы
+            path: this.PathOutStatic, // 127.0.0.1/static/frontend_react/public/ откуда подаются файлы
             // Путь который будет в html ссылке
             publicPath: `${this.PathByUrl}`,
         };
@@ -216,7 +243,7 @@ class Main {
             },
             // Путь к статиечским файлам
             static: {
-                directory: path.join(__dirname, `${this.PathOutStatic}/`),
+                directory: this.PathOutStatic,//path.join(__dirname, `${this.PathOutStatic}/`),
             },
             // Разрешить все домены
             allowedHosts: 'all',
@@ -317,7 +344,14 @@ module.exports = (env) => {
     https://webpack.js.org/guides/environment-variables/
 
     */
-    obj_ = new Main(isDev, env.PathApp, env.PathOutStatic, env.PathSrc, env.PathByUrl, env.PathOutTemplate,);
+    obj_ = new Main(isDev, env.PathApp,
+        env.PathOutStatic,
+        env.PathSrc,
+        env.PathByUrl,
+        env.PathOutTemplate,
+        env.AutoComplete,
+        env.MainStaticPath
+    );
     console.log(obj_.res);
     return obj_.res;
 };

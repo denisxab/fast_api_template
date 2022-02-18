@@ -1,9 +1,10 @@
 <script>
-	let a = 'A';
+	let a = 'A'
 </script>
 
 <div>
 	Буква = {a}
+	ББУУУ
 </div>
 
 <style>

@@ -48,7 +48,9 @@ def index(
         templates=Depends(get_tamplate)
 ):
     if not Admin.is_login(request, response):
-        return templates.TemplateResponse("login.html",
-                                          {"request": request,
-                                           "url_login": router.url_path_for("admin_login")})
+        # TODO: login.html
+        return templates.TemplateResponse("index.html", {"request": request})
+        # return templates.TemplateResponse("login.html",
+        #                                   {"request": request,
+        #                                    "url_login": router.url_path_for("admin_login")})
     return RedirectResponse(router.url_path_for("main_admin"))

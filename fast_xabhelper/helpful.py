@@ -19,3 +19,4 @@ def copy_static(path_static: str, name_app: str):
         else:
             copytree(in_path, out_path)
         logger.info(f"Копирование статических файлов: {out_path}")
+

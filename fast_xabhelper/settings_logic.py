@@ -12,6 +12,10 @@ from mg_file.file.base_file import read_file_by_module
 class AllowedNamesType(TypedDict):
     """
     Список поддерживаемых переменных в файле с настройками
+
+    Optional - означает что эти переменные обязательны для переопределения
+
+    Эти переменные будут доступны в переменных окружениях интерпретатора `os.environ`
     """
 
     """
@@ -44,6 +48,12 @@ class AllowedNamesType(TypedDict):
     """
     # Нудно ли копировать статические файлы
     COPY_STATIC: bool
+    # На коком хосту запустить веб сервер
+    HOST_WEB: Optional[int]
+    # На коком порту запустить веб сервер
+    PORT_WEB: Optional[int]
+    # Авто перезагрузка сервера
+    RELOAD_WEB: bool
 
 
 AllowedNames: dict[str, Any] = AllowedNamesType(
@@ -52,10 +62,13 @@ AllowedNames: dict[str, Any] = AllowedNamesType(
     SQLALCHEMY_DATABASE_URL=None,
     ADMIN_USER_NAME=None,
     ADMIN_PASSWORD=None,
+    STATIC_PATH=None,
+    PORT_WEB=None,
+    HOST_WEB=None,
+    COPY_STATIC=True,
     ALL_APP="",
     ALL_MODEL="",
-    STATIC_PATH=None,
-    COPY_STATIC=True,
+    RELOAD_WEB=True,
 )
 
 
@@ -85,5 +98,5 @@ def __read_settings_file(_path: str):
     for _no_implemented in set(AllowedNames.keys()) - implemented:
         # Если переменная обязательна для переопределения, то вызываем исключение
         if AllowedNames[_no_implemented] is None:
-            raise KeyError(f"Не реализована переменная {_no_implemented}")
+            raise KeyError(f"В файле настроек `settings.py` не реализована переменная {_no_implemented}")
         environ[_no_implemented] = str(AllowedNames[_no_implemented])

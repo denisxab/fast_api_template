@@ -16,15 +16,9 @@ from fast_xabhelper.database_pack.database import get_session_transaction, get_s
 from fast_xabhelper.database_pack.db_helper import hashPassword
 from fast_xabhelper.session_pack.session_base import SESSION_RAM
 from fast_xabhelper.user_pack.model import User, regex_email
+from fast_xabhelper.user_pack.user_base import is_login_user, enter
 
 router = APIRouter(tags=["user"], prefix="/user")
-
-
-def enter(response, id_: int) -> str:
-    """Войти"""
-    hash_: str = SESSION_RAM.crate_session(response)
-    SESSION_RAM._add(hash_, "user_id", id_)
-    return hash_
 
 
 @router.post("/register")
@@ -49,6 +43,7 @@ async def register(
 async def create_token(
         requests: Request,
         session: AsyncSession = Depends(get_session_transaction),
+        authorized: bool = Depends(is_login_user),
 ):
     """Создать токен для своего пользователя"""
     res: str = await User.create_token(session,
@@ -60,6 +55,7 @@ async def create_token(
 async def get_token(
         requests: Request,
         session: AsyncSession = Depends(get_session_transaction),
+        authorized: bool = Depends(is_login_user),
 ):
     """Получить свой токен пользователя"""
     res: str = await User.get_token(session,
@@ -67,16 +63,17 @@ async def get_token(
     return {"token": res}
 
 
-@router.get("/is_login")
-async def is_login(
-        requests: Request,
-):
-    """Проверить аутентификацию"""
-    return {"id": SESSION_RAM.get(requests, 'user_id')}
+# @router.get("/is_login")
+# async def is_login(
+#         requests: Request,
+#         response: Response,
+# ):
+#     """Проверить аутентификацию"""
+#     return {"id": SESSION_RAM.get(requests, response, 'user_id')}
 
 
 @router.post("/login", tags=["user"])
-async def login_user(
+async def login(
         response: Response,
         email: str = Form(..., regex=regex_email),
         password: str = Form(...),
@@ -92,9 +89,10 @@ async def login_user(
 
 
 @router.get("/logout", tags=["user"])
-async def logout_user(
+async def logout(
         response: Response,
         request: Request,
+        authorized: bool = Depends(is_login_user),
 ):
     """Выйти из аккаунта пользователя"""
     return {"status": SESSION_RAM.delete_session(response, request)}

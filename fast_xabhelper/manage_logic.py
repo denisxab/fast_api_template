@@ -1,7 +1,7 @@
 """
 Файл для выполнения инструкций
 """
-
+import os
 from asyncio import run
 from enum import Enum
 from typing import Type
@@ -85,10 +85,12 @@ class Mange:
                     """
                     Задачи которы нужно выполнить при запуске сервера
                     """
+                    logger.success(
+                        f"Сервер запущен\nhost={os.environ['HOST_WEB']}, port={os.environ['PORT_WEB']}, reload={os.environ['RELOAD_WEB']}")
                     self.include_mount()
 
                 @self.app.on_event("shutdown")
-                async def on_startup():
+                async def on_shutdown():
                     """
                     Задачи которы нужно выполнить при запуске сервера
                     """
@@ -100,7 +102,11 @@ class Mange:
                 if __name__ == "__main__":
                     mg.main("run_dev")
                 """
-                uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
+                uvicorn.run("main:app",
+                            host=os.environ["HOST_WEB"],
+                            port=int(os.environ["PORT_WEB"]),
+                            reload=os.environ["RELOAD_WEB"])
 
     @staticmethod
     async def init_models(engine, Base):

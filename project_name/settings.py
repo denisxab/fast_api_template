@@ -31,6 +31,10 @@ COPY_STATIC = "True"
 ADMIN_USER_NAME = "denis"
 # Пароль от админ панели
 ADMIN_PASSWORD = "321"
+# Порт сервера
+PORT_WEB = 8093
+# IP сервера
+HOST_WEB = "127.0.0.1"
 
 
 class Mount(BaseMount):
@@ -64,5 +68,6 @@ class Mount(BaseMount):
         self.add_admin_panel(PhotoPanel())
 
     def mount_src_svelte(self):
-        self.add_src_svelte("/home/denis/PycharmProjects/fastApiProject/fast_xabhelper/admin_pack",
-                            PathByUrl="/static/admin")
+        self.add_src_svelte(
+            "/home/denis/PycharmProjects/fastApiProject/fast_xabhelper/admin_pack",
+            NameApp="admin_pack", AutoComplete=False)

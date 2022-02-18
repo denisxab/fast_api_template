@@ -1,6 +1,8 @@
 """
 Файл для подключения зависимостей к приложению
 """
+import os
+import threading
 from abc import abstractmethod
 from os import environ, path, system
 from typing import Type, Union
@@ -90,30 +92,52 @@ class BaseMount:
 
     @staticmethod
     def add_src_svelte(PathApp: str,
+                       NameApp: str,
                        PathOutStatic: str = None,
                        PathSrc: str = None,
                        PathByUrl: str = None,
-                       PathOutTemplate: str = None):
+                       PathOutTemplate: str = None,
+                       AutoComplete: bool = False
+                       ):
         """
         Добавим в очередь на выполнение команды компиляции скриптов на `Svelte`.
 
         @param PathOutStatic: Путь для скомпилированных файлов
+        @param NameApp: Имя приложения
         @param PathSrc: Путь до папки с скриптами `Svelte`
         @param PathByUrl: Какой  URL будет в `HTML` файле. Нужен для маршрутизации
         @param PathApp: Путь к приложению
         @param PathOutTemplate:  Путь для сохранения готового html файла
+        @param AutoComplete: Следить за изменениями в коде и перекомпилировать скрипты
         @return:
         """
-        cmd = "npm --prefix {0} run build -- {1}{2}{3}{4}{5}".format(
-            concat_absolute_dir_path(__file__, "svelte_pack"),
-            f" --env PathOutStatic={PathOutStatic}" if PathOutStatic else "",
-            f" --env PathSrc={PathSrc}" if PathSrc else "",
-            f" --env PathByUrl={PathByUrl}" if PathByUrl else "",
-            f" --env PathApp={PathApp}" if PathApp else "",
-            f" --env PathOutTemplate={PathOutTemplate}" if PathOutTemplate else "",
-        )
-        logger.info(cmd)
-        system(cmd)
+
+        def self__():
+
+            cmd = "npm --prefix {0} run build -- {1}{2}{3}{4}{5}{6}".format(
+                concat_absolute_dir_path(__file__, "svelte_pack"),
+                f" --env PathOutStatic={PathOutStatic}" if PathOutStatic else "",
+                f" --env PathSrc={PathSrc}" if PathSrc else "",
+                f" --env PathByUrl={PathByUrl}" if PathByUrl else f" --env PathByUrl=/static/{NameApp}",
+                f" --env PathApp={PathApp}" if PathApp else "",
+                f" --env AutoComplete=true" if AutoComplete else " --env AutoComplete=false",
+                f" --env PathOutTemplate={PathOutTemplate}" if PathOutTemplate else "",
+                # Путь к главной папке с приложением где находятся статические файлы
+                f" --env MainStaticPath={os.path.join(os.environ['STATIC_PATH'], NameApp)}",
+            )
+            logger.info(cmd)
+            system(cmd)
+
+        if AutoComplete:
+            """
+            Так как мы используем автоперекампеляцию кода при изменении файлов,
+            то для того чтобы поток выполнения не блокировался, мы выполняем команду в отдельном потоке.
+            """
+            logger.info(f"Создан новый поток: {NameApp}")
+            th = threading.Thread(target=self__, args=(), name=f"{NameApp}", daemon=True)
+            th.start()
+        else:
+            self__()
 
     @staticmethod
     def add_admin_panel(admin_panel):
