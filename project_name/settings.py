@@ -31,7 +31,7 @@ COPY_STATIC = "True"
 # Имя админа
 ADMIN_USER_NAME = "denis"
 # Пароль от админ панели
-ADMIN_PASSWORD = "123"
+ADMIN_PASSWORD = "321"
 
 
 class Mount(BaseMount):

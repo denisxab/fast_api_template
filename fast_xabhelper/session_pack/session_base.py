@@ -107,9 +107,13 @@ class SESSION_RAM(SESSION):
 
 
 class SESSION_FILE(SESSION_RAM):
+    """
+    Сессия будет взята из файла, и будет записана в файл
+    после завершения сервера
+    """
     file = JsonFile("session.json")
 
-    read_fun = lambda res: res if res else {}
+    read_fun = lambda _x: _x if _x else {}
 
     data = read_fun(file.readFile())
 

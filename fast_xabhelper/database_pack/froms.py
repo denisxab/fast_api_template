@@ -5,7 +5,8 @@ from sqlalchemy.sql.type_api import TypeEngine
 CONVERT_SQL_TYPE_TO_HTML_INPUT_TYPE: dict[str, str] = {
     'INTEGER': "number",
     "VARCHAR": "text",
-    "BOOLEAN": "radio"
+    "BOOLEAN": "radio",
+
 }
 
 Convert_sql_type_to_python_type: dict[str, Any] = {

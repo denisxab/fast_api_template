@@ -31,6 +31,27 @@ async def update_edit(
     return {"error": "Данные не обновлены"}
 
 
+@router.get("create/{model_name}/",
+            response_class=HTMLResponse,
+            name="create_model_which_admin_panel")
+async def create(
+        model_name: str,
+        request: Request,
+        templates=Depends(get_tamplate),
+        authorized: bool = Depends(is_login_admin),
+):
+    model: AdminPanel = Admin.arr_admin[model_name]
+    extend_column, title_column = model.get_colums()
+    context = {"request": request,
+               "model": Admin.arr_admin[model_name],
+               "title_column": title_column,
+               "extend_column": extend_column,
+               # "data_item": await model.get_row_by_id(id_),
+               "url_update": request.url_for("update_edit")
+               }
+    return templates.TemplateResponse("create.html", context)
+
+
 @router.get("/{model_name}/{id_}", response_class=HTMLResponse, name="edit")
 async def edit(
         model_name: str,
@@ -47,6 +68,6 @@ async def edit(
                "title_column": title_column,
                "extend_column": extend_column,
                "data_item": await model.get_row_by_id(id_),
-               "url_update": request.url_for("update_edit")
+               "url_update": request.url_for("update_edit"),
                }
     return templates.TemplateResponse("edit.html", context)

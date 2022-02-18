@@ -1,22 +1,17 @@
 {% import "macro.html" as mc %}
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Panel {{ model.name }}</title>
+    <title>Create Row {{ model.name }}</title>
     <link href="{{ url_for('static', path='/admin_pack/css/styles.css') }}" rel="stylesheet">
+
 </head>
 <body>
 <div>
     {{ model.name }}
 </div>
-
-<div>
-    <a href="{{ url_create }}"> Добавить запись</a>
-</div>
-
 <table>
     <thead>
     {# Заголовки#}
@@ -24,12 +19,8 @@
         {{ mc.create_title_column(extend_column) }}
     </tr>
     </thead>
-    {# Запси #}
-    <tbody>
-    {{ mc.creacte_body_tabel(data,title_column,url_lambda) }}
-    </tbody>
 </table>
 
-
+{{ mc.create_row_whith_model(url_create, model, extend_column) }}
 </body>
 </html>

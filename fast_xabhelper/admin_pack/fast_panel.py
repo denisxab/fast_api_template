@@ -33,6 +33,7 @@ async def panel_model(
                "extend_column": extend_column,
                "data": await model.get_rows(),
                "url_lambda": lambda data:
-               request.url_for("edit", model_name=model.name, id_=data)
+               request.url_for("edit", model_name=model.name, id_=data),
+               "url_create": request.url_for("create_model_which_admin_panel", model_name=model_name),
                }
     return templates.TemplateResponse("panel.html", context)
