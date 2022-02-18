@@ -1,10 +1,8 @@
 /venv
 /.idea
-project_name/__pycache__/
-project_name/session.json
-../../project_name/photo/__pycache__/
-../session_pack/__pycache__/
-../database_pack/__pycache__/
-../__pycache__/
+/project_name/session.json
 /fast_xabhelper/admin_pack/static/public/*
 /fast_xabhelper/svelte_pack/node_modules
+/fast_xabhelper/admin_pack/static/*
+/project_name/static/admin_pack/*
+__pycache__/
