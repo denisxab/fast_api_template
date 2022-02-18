@@ -65,7 +65,7 @@ class Mount(BaseMount):
 
     def mount_src_svelte(self):
         self.add_src_svelte(
-            "/home/denis/PycharmProjects/fastApiProject/fast_xabhelper/admin_pack/static",
+            "/home/denis/PycharmProjects/fastApiProject/fast_xabhelper/admin_pack/static/public",
             "/home/denis/PycharmProjects/fastApiProject/fast_xabhelper/admin_pack/src",
             "/static/admin"
         )

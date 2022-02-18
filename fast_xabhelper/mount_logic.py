@@ -2,7 +2,7 @@
 Файл для подключения зависимостей к приложению
 """
 from abc import abstractmethod
-from os import environ, path
+from os import environ, path, system
 from typing import Type, Union
 
 from fastapi import FastAPI, APIRouter
@@ -97,12 +97,13 @@ class BaseMount:
         @param PathByUrl: Какой  URL будет в `HTML` файле. Нужен для маршрутизации
         @return:
         """
-        cmd = "npm run build -- --env PathOutStatic={0}--env PathSrc={1} --env PathByUrl={2}".format(
+        cmd = "npm --prefix {0} run build -- --env PathOutStatic={1} --env PathSrc={2} --env PathByUrl={3}".format(
+            "/home/denis/PycharmProjects/fastApiProject/fast_xabhelper/svelte_pack ",
             PathOutStatic,
             PathSrc,
             PathByUrl)
-
-        # system(cmd)
+        logger.info(cmd)
+        system(cmd)
 
     @staticmethod
     def add_admin_panel(admin_panel):
