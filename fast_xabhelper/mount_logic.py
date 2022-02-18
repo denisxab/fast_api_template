@@ -8,6 +8,7 @@ from typing import Type, Union
 from fastapi import FastAPI, APIRouter
 from fastapi.staticfiles import StaticFiles
 from loguru import logger
+from mg_file.file.base_file import concat_absolute_dir_path
 from sqlalchemy.orm import DeclarativeMeta
 
 from fast_xabhelper.helpful import copy_static
@@ -78,6 +79,7 @@ class BaseMount:
         """
         Запустить монтирование
         """
+        self.mount_src_svelte()
         self.mount_route()
         logger.info(f'APP-{environ["ALL_APP"]}')
         self.mount_model()
@@ -85,23 +87,31 @@ class BaseMount:
         self.mount_admin_panel()
         self.mount_other_dependents()
         self.mount_static()
-        self.mount_src_svelte()
 
     @staticmethod
-    def add_src_svelte(PathOutStatic: str, PathSrc: str, PathByUrl: str):
+    def add_src_svelte(PathApp: str,
+                       PathOutStatic: str = None,
+                       PathSrc: str = None,
+                       PathByUrl: str = None,
+                       PathOutTemplate: str = None):
         """
         Добавим в очередь на выполнение команды компиляции скриптов на `Svelte`.
 
         @param PathOutStatic: Путь для скомпилированных файлов
         @param PathSrc: Путь до папки с скриптами `Svelte`
         @param PathByUrl: Какой  URL будет в `HTML` файле. Нужен для маршрутизации
+        @param PathApp: Путь к приложению
+        @param PathOutTemplate:  Путь для сохранения готового html файла
         @return:
         """
-        cmd = "npm --prefix {0} run build -- --env PathOutStatic={1} --env PathSrc={2} --env PathByUrl={3}".format(
-            "/home/denis/PycharmProjects/fastApiProject/fast_xabhelper/svelte_pack ",
-            PathOutStatic,
-            PathSrc,
-            PathByUrl)
+        cmd = "npm --prefix {0} run build -- {1}{2}{3}{4}{5}".format(
+            concat_absolute_dir_path(__file__, "svelte_pack"),
+            f" --env PathOutStatic={PathOutStatic}" if PathOutStatic else "",
+            f" --env PathSrc={PathSrc}" if PathSrc else "",
+            f" --env PathByUrl={PathByUrl}" if PathByUrl else "",
+            f" --env PathApp={PathApp}" if PathApp else "",
+            f" --env PathOutTemplate={PathOutTemplate}" if PathOutTemplate else "",
+        )
         logger.info(cmd)
         system(cmd)
 

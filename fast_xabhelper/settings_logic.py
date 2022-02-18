@@ -83,6 +83,7 @@ def __read_settings_file(_path: str):
 
     # Для не переопределенных переменных берем значения по умолчанию
     for _no_implemented in set(AllowedNames.keys()) - implemented:
+        # Если переменная обязательна для переопределения, то вызываем исключение
         if AllowedNames[_no_implemented] is None:
             raise KeyError(f"Не реализована переменная {_no_implemented}")
         environ[_no_implemented] = str(AllowedNames[_no_implemented])

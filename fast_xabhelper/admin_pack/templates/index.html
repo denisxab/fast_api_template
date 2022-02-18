@@ -1,24 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Main Admin Panel</title>
-
-    <style>
-        body {
-            background: #7f99cc;
-        }
-    </style>
-</head>
-<body>
-<p>
-    Панели:
-</p>
-{% for ITEM in list_panel -%}
-    <p>
-        <a href="panel/{{ ITEM }}">{{ ITEM }}</a>
-    </p>
-{% endfor -%}
-
-</body>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<title>Svelte Template</title>
+		<!-- Иконка	-->
+		<link rel="shortcut icon" type="image/png" href="https://img.icons8.com/fluency/48/000000/globe-earth.png">
+	<script defer="defer" src="/static/admin/vendors-node_modules_svelte_internal_index_mjs.bundle.js"></script><script defer="defer" src="/static/admin/main.bundle.js"></script></head>
+	<body></body>
 </html>

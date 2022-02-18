@@ -7,3 +7,4 @@ project_name/session.json
 ../database_pack/__pycache__/
 ../__pycache__/
 /fast_xabhelper/admin_pack/static/public/*
+/fast_xabhelper/svelte_pack/node_modules

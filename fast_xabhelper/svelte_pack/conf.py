@@ -116,18 +116,6 @@ npm = (
     }
 )
 
-gitignore = (
-    ".gitignore", "./",
-    """
-/__pycache__
-/node_modules
-$$(path_static)$$
-"""[1:],
-    {
-        "path_static": path_public,
-    }
-)
-
 nginx = (
     "default.conf", "./nginx",
     """
@@ -139,7 +127,7 @@ server {
     location = /favicon.ico {
         access_log off; log_not_found off;
     }
-    # Раздача `index.html`
+    # Раздача `indexs.html`
     location / {
         root $$(root_path)$$;
     }

@@ -16,14 +16,29 @@ const TerserPlugin = require('terser-webpack-plugin');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
 class Main {
-    constructor(isDev, PathOutStatic, PathSrc, PathByUrl) {
-        this.isDev = isDev;
-        // Путь для статический файлов после компиляции
-        this.PathOutStatic = PathOutStatic;
-        this.PathSrc = PathSrc;
-        this.PathByUrl = PathByUrl;
+    constructor(isDev, PathApp,
+                PathOutStatic = null,
+                PathSrc = null,
+                PathByUrl = null,
+                PathOutTemplate = null
+    ) {
+        /*
+        По умолчанию подразумевается следующая архитектура приложения
 
-        console.log(this.PathByUrl);
+        - app
+            - src (Место для исходных скриптов)
+            - static
+                - public (Место для скомпилированных статических файлов)
+            - template (Место для html файла)
+         */
+
+        this.isDev = isDev;
+        this.PathOutStatic = PathOutStatic ? PathOutStatic : path.resolve(PathApp, 'static');
+        this.PathSrc = PathSrc ? PathSrc : path.resolve(PathApp, 'src');
+        this.PathByUrl = PathByUrl ? PathByUrl : '/static/public';
+        this.PathOutTemplate = PathOutTemplate ? PathOutTemplate : path.resolve(PathApp, 'templates')
+
+        console.log(this.PathApp);
         this.res = {
             // Режим работы [production(сжатие кода)/development]
             mode: isDev ? 'development' : 'production',
@@ -126,7 +141,7 @@ class Main {
                 // Куда поместить итоговый `HTMl` файл
                 filename: path.resolve(
                     __dirname,
-                    `${this.PathOutStatic}/index.html`,
+                    `${this.PathOutTemplate}/index.html`,
                 ),
                 // Оптимизировать сборку `HTMl`файла если не режим разработки
                 minify: {
@@ -171,7 +186,7 @@ class Main {
 
     Entry() {
         return {
-            // Его мы подключаем в `index.html`
+            // Его мы подключаем в `indexs.html`
             main: path.resolve(__dirname, `${this.PathSrc}/main.js`),
             // Путь к другому файлу для компиляции
             // other: path.resolve(__dirname, `src/other.tsx`)
@@ -302,7 +317,7 @@ module.exports = (env) => {
     https://webpack.js.org/guides/environment-variables/
 
     */
-    obj_ = new Main(isDev, env.PathOutStatic, env.PathSrc, env.PathByUrl);
+    obj_ = new Main(isDev, env.PathApp, env.PathOutStatic, env.PathSrc, env.PathByUrl, env.PathOutTemplate,);
     console.log(obj_.res);
     return obj_.res;
 };

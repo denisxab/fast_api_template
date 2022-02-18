@@ -34,7 +34,7 @@ async def main_page(
                "list_panel": []}
     for _panel in Admin.arr_admin.keys():
         context["list_panel"].append(_panel)
-    return templates.TemplateResponse("index.html", context)
+    return templates.TemplateResponse("indexs.html", context)
 
 
 # Указываем что возвращаем `HTML`

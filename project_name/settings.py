@@ -64,8 +64,5 @@ class Mount(BaseMount):
         self.add_admin_panel(PhotoPanel())
 
     def mount_src_svelte(self):
-        self.add_src_svelte(
-            "/home/denis/PycharmProjects/fastApiProject/fast_xabhelper/admin_pack/static/public",
-            "/home/denis/PycharmProjects/fastApiProject/fast_xabhelper/admin_pack/src",
-            "/static/admin"
-        )
+        self.add_src_svelte("/home/denis/PycharmProjects/fastApiProject/fast_xabhelper/admin_pack",
+                            PathByUrl="/static/admin")
