@@ -25,7 +25,7 @@ class ExtendColumn(TypedDict):
     unique: bool
 
 
-def row2dict(row: DeclarativeMeta, list_display: list) -> tuple[dict[Any, dict[str, Any]], Union[list[Any], Any]]:
+def row2dict(row: DeclarativeMeta, list_display: tuple[str]) -> tuple[dict[Any, dict[str, Any]], Union[list[Any], Any]]:
     """
     Получить имена атрибутов в модели БД
     """

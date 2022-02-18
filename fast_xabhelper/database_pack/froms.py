@@ -6,7 +6,8 @@ CONVERT_SQL_TYPE_TO_HTML_INPUT_TYPE: dict[str, str] = {
     'INTEGER': "number",
     "VARCHAR": "text",
     "BOOLEAN": "radio",
-
+    "PathField": "file",
+    "ImageField": "file",
 }
 
 Convert_sql_type_to_python_type: dict[str, Any] = {

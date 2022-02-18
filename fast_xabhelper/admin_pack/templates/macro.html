@@ -1,23 +1,24 @@
 {% macro create_title_column(_extend_column) -%}
     {#
-     Создать заголовки таблицы
-    #}
+Создать заголовки таблицы
+#}
     {% for k,v in _extend_column.items() -%}
         <th>{{ k }}
             <hr>
-            {{ v["type"]|lower }}</th>
+            {{ v["type"]|lower }}
+        </th>
     {% endfor -%}
 {%- endmacro %}
 
-{% macro creacte_body_tabel(_rows, _title_column, _url_lambda) -%}
+{% macro create_body_table(_rows, _title_column, _url_lambda) -%}
     {#
-     Создать записи в таблицу
-    #}
+Создать записи в таблицу
+#}
     {% for _rw in _rows -%}
         <tr>
             {# Перебираем сотбцы #}
             {% for _title in _title_column -%}
-                {% if _title   == "id" %}
+                {% if _title == "id" %}
                     {# Сыылка для редактирования записи #}
                     <th><a href="{{ _url_lambda(_rw._data[0][_title]|string) }}/">{{ _rw._data[0][_title] }}</a>
                     </th>
@@ -30,62 +31,123 @@
 {%- endmacro %}
 
 
-{% macro create_forms_html_imput(_name_column, _external_column, _data_by_column) -%}
-    {#
-    Создать столбцы в виде HTML INPUT
+{% macro create_forms_html_input(
+    nameColumn,
+    htmlTypeInput,
+    DataItem,
+    ExtendColumn,
+    ReadonlyFields
+    ) %}
 
-    @params _name_column: str : Имя столбца
-    @params _external_column: dict : Разширенные данные о столбце
-    @params _data: str|None: Данные в столбце
-    #}
-    <div>
-        {{ _name_column }}
-    </div>
-    {# Если boolean #}
-    {% if _external_column.html_input_type == "radio" %}
-        {% if  _data_by_column == True %}
-            <input type="radio" name="{{ ke }}-{{ _external_column.html_input_type }}" checked value="on"> Да
-            <input type="radio" name="{{ ke }}-{{ _external_column.html_input_type }}" value="off"> Нет
+    {#
+Создать поля в виде HTML INPUT из столбцов
+
+@params _name_column: str : Имя столбца
+@params _external_column: dict : Расширенные данные о столбце
+@params _data: str|None: Данные в столбце
+#}
+
+    {# Если имя не помечено только для чтения #}
+    {% if not nameColumn in ReadonlyFields %}
+        <div>
+            {{ nameColumn }}
+        </div>
+
+        {# Если boolean #}
+        {% if htmlTypeInput == "radio" %}
+            {% if DataItem == True %}
+                <input type="radio" name="{{ nameColumn }}-{{ htmlTypeInput }}" checked value="on"> Да
+                <input type="radio" name="{{ nameColumn }}-{{ htmlTypeInput }}" value="off"> Нет
+            {% else %}
+                <input type="radio" name="{{ nameColumn }}-{{ htmlTypeInput }}" value="on"> Да
+                <input type="radio" name="{{ nameColumn }}-{{ htmlTypeInput }}" checked value="off"> Нет
+            {% endif %}
+
         {% else %}
-            <input type="radio" name="{{ ke }}-{{ _external_column.html_input_type }}" value="on"> Да
-            <input type="radio" name="{{ ke }}-{{ _external_column.html_input_type }}" checked value="off"> Нет
+            <input type="{{ htmlTypeInput }}" {% if DataItem==True %}
+                   value="{{ DataItem }}" {% endif %} name="{{ nameColumn }}-{{ htmlTypeInput }}">
         {% endif %}
+
+
     {% else %}
-        <input type="{{ _external_column.html_input_type }}"
-                {% if  _data_by_column == True %} value="{{ _data_by_column }}" {% endif %}
-               name="{{ ke }}-{{ _external_column.html_input_type }}">
+        <div>
+            {{ nameColumn }} = {{ DataItem }}
+        </div>
     {% endif %}
+
 {%- endmacro %}
 
-{% macro create_form(_url_form,
-    _model,
-    _extend_column,
-    _data_item,
-    name_form,
-    text_submit) %}
-    {#
-    Создать форму для столбцом модели
+
+{% macro create_form(
+    titleColomn,
+    nameForm,
+    textSubmit,
+    enctype,
+    Model,
+    ReadonlyFields,
+    ExtendColumn,
+    DataItem,
+    UrlForm
+    ) %}
+    {# Создать форму для столбцом модели
+
+@params UrlForm : str : путь отправки формы
+@params Model : AdminPanel : Эземпляр AdminPanel
+@params ExtendColumn :  dict[Any, dict[str, Any]] : Разширенная информация о столбцах
+
     #}
-    <form action="{{ _url_form }}" method="post" name="{{ name_form }}">
-        <input type="hidden" name="model_name" value="{{ _model.name }}">
-        {% for ke, val in _extend_column.items() %}
+
+    <form action="{{ UrlForm }}"
+          method="post"
+          name="{{ nameForm }}"
+          target="_self"
+          enctype="{{ enctype }}">
+
+        {% for _tc in titleColomn %}
             <label>
-                {{ create_forms_html_imput(ke,val, _data_item[ke]) }}
+                {{ create_forms_html_input(
+                        nameColumn = _tc,
+                        htmlTypeInput = ExtendColumn[_tc],
+                        ReadonlyFields = kwargs["ReadonlyFields"],
+                        ExtendColumn = kwargs["ExtendColumn"],
+                        DataItem = kwargs["DataItem"]
+                        ) }}
             </label>
         {% endfor %}
+
         <p></p>
-        <input type="submit" value="{{ text_submit }}">
+        <input type="submit" value="{{ textSubmit }}">
     </form>
+{% endmacro %}
+
+
+{% macro create_fields_from_model() %}
+
+    {# Создаем поля для UTF #}
+    {{ create_form(
+        *varargs,
+        titleColomn = kwargs["ColumnEnctypeUtf"],
+        textSubmit = "Создать запись",
+        enctype = "application/x-www-form-urlencoded",
+        nameForm = "CreateUtf",
+        **kwargs) }}
+
+    {# Создаем поля для Файлов #}
+    {{ create_form(
+                *varargs,
+                titleColomn = kwargs['ColumnEnctypeFile'],
+                textSubmit="Создать запись",
+                enctype="multipart/form-data",
+                nameForm="CreateFile",
+                **kwargs) }}
+
 {% endmacro %}
 
 
 {% macro editor_db(_url_form, _model, _extend_column, _data_item) -%}
     {# Создать форму с полями для обновления записей в модель #}
-    {{ create_form(_url_create, _model, _extend_column, _data_item, text_submit="Отправить изменения", name_form="Update") }}
-{%- endmacro %}
-
-
-{% macro create_row_whith_model(_url_create, _model, _extend_column) -%}
-    {# Создать форму с полями для созданя записей в модель #}
-    {{ create_form(_url_create, _model, _extend_column, _data_item=None, text_submit="Создать запись", name_form="Create") }}
+    {{ create_form(_url_create, _model, _extend_column, _data_item,
+    text_submit="Отправить изменения",
+    name_form="Update",
+    readonly_fields=readonly_fields) }}
 {%- endmacro %}

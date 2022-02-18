@@ -6,3 +6,4 @@ class PhotoPanel(AdminPanel):
     name = "Фото"
     model = Photo
     list_display = ["id", "user_id", "path"]
+    readonly_fields = ("id",)

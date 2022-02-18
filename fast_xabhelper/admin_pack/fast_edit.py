@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import Request, Form, Depends, APIRouter
+from fastapi import Request, Depends, APIRouter
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,10 +12,10 @@ from fast_xabhelper.database_pack.database import get_session_transaction
 router = APIRouter(prefix="/edit", tags=["admin"])
 
 
-@router.post("/update", name="update_edit")
+@router.post("/update/{model_name}", name="update_edit")
 async def update_edit(
         request: Request,
-        model_name: str = Form(...),
+        model_name: str,
         session: AsyncSession = Depends(get_session_transaction),
         authorized: bool = Depends(is_login_admin),
 ):
@@ -31,7 +31,7 @@ async def update_edit(
     return {"error": "Данные не обновлены"}
 
 
-@router.get("create/{model_name}/",
+@router.get("/create/{model_name}/",
             response_class=HTMLResponse,
             name="create_model_which_admin_panel")
 async def create(
@@ -42,12 +42,16 @@ async def create(
 ):
     model: AdminPanel = Admin.arr_admin[model_name]
     extend_column, title_column = model.get_colums()
+
+    column_enctype_utf, column_enctype_file = model.parse_column(extend_column)
+
     context = {"request": request,
                "model": Admin.arr_admin[model_name],
-               "title_column": title_column,
+               "column_enctype_utf": column_enctype_utf,
+               "column_enctype_file": column_enctype_file,
                "extend_column": extend_column,
-               # "data_item": await model.get_row_by_id(id_),
-               "url_update": request.url_for("update_edit")
+               "url_create": request.url_for("update_edit", model_name=model.name),
+               "readonly_fields": model.readonly_fields,
                }
     return templates.TemplateResponse("create.html", context)
 
@@ -69,5 +73,6 @@ async def edit(
                "extend_column": extend_column,
                "data_item": await model.get_row_by_id(id_),
                "url_update": request.url_for("update_edit"),
+               "readonly_fields": model.readonly_fields
                }
     return templates.TemplateResponse("edit.html", context)

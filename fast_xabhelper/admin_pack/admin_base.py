@@ -48,7 +48,9 @@ class AdminPanel:
     # Модель `SqlAlchemy`
     model: Optional[DeclarativeMeta] = None
     # Имя столбца которые мы хотим видеть в админ панели.
-    list_display: Optional[list[str]] = None
+    list_display: Optional[tuple[str]] = None
+    # Поля которые можно только смотреть, но не редактировать.
+    readonly_fields: Optional[tuple[str]] = ("id",)
 
     # Указать имя столбца через которое можно перейти редактированию записи.
     # list_display_links = ("$Any2$",)
@@ -87,7 +89,20 @@ class AdminPanel:
         Получить столбцы
         :return:
         """
+
         return row2dict(cls.model, cls.list_display)
+
+    @classmethod
+    def parse_column(cls, extend_column: dict[str, Any]):
+        column_enctype_utf = []
+        column_enctype_file = []
+        for _k, _v in extend_column.items():
+            if str(_v["type"]) in ("ImageField", "PathField"):
+                column_enctype_file.append(_k)
+            else:
+                column_enctype_utf.append(_k)
+
+        return column_enctype_utf, column_enctype_file
 
 
 class Admin:
@@ -131,6 +146,8 @@ class Admin:
         form: FormData = await request.form()
         form: dict = form._dict
         del form["model_name"]
+
+        raise ValueError
         res = convert_html_input_type_to_python_type(form)
         # В запросе должен быть id записи
         if res.get("id", None):

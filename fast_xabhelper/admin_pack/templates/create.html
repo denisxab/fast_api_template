@@ -21,6 +21,15 @@
     </thead>
 </table>
 
-{{ mc.create_row_whith_model(url_create, model, extend_column) }}
+{{ mc.create_fields_from_model(
+     Model = model,
+     ExtendColumn = extend_column,
+     ReadonlyFields = readonly_fields,
+     ColumnEnctypeUtf = column_enctype_utf,
+     ColumnEnctypeFile = column_enctype_file,
+     UrlForm = url_create,
+     DataItem = None
+) }}
+
 </body>
 </html>
