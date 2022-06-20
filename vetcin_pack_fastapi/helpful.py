@@ -45,3 +45,6 @@ def read_file_by_module(_path: str) -> ModuleType:
     # когда модуль импортируется или перезагружается.
     spec.loader.exec_module(__module)
     return __module
+
+
+

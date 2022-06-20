@@ -23,7 +23,7 @@ class allow_command(Enum):
     #: Запустить `ASGI` сервер `uvicorn`
     run_dev = "run_dev"
     #: Создать шаблонное приложение
-    add_app = "add_app"
+    create_app = "create_app"
 
 
 class Mange(BaseManage):
@@ -57,5 +57,5 @@ class Mange(BaseManage):
             case command.init_app.name:
                 pass
 
-            case command.add_app.name:
-                self.add_app(name_app=kwargs['name_app'])
+            case command.create_app.name:
+                self.create_app(name_app=kwargs['name_app'])

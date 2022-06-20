@@ -45,7 +45,7 @@ def run_command(cmd, path_where_app, manage_name, name_app):
 
     match cmd:
         # Создать шаблонное приложение
-        case allow_command.add_app.name:
+        case allow_command.create_app.name:
             if not name_app:
                 raise ValueError(f"Аргумент `name_app` не задан !")
             else:

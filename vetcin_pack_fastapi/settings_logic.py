@@ -4,10 +4,12 @@
 в любой точке программы
 """
 
-__all__ = ["mount_env", "AllowedNamesTypeFromSettings", "BaseSetting"]
+__all__ = ["mount_env", "AllowedNamesTypeFromSettings", "BaseSettings"]
 
+import re
 from abc import abstractclassmethod
 from os import environ
+from pathlib import Path
 from typing import Optional, Any, Type
 
 from vetcin_pack_fastapi.mount_logic import BaseMount
@@ -22,33 +24,34 @@ class AllowedNamesTypeFromSettings():
     Эти переменные будут доступны в переменных окружениях интерпретатора `os.environ`
     """
     """Пути"""
-    #: Полный путь к Django приложению
-    BASE_DIR: str = None
-    #: Полный путь к проекту
-    ROOT_DIR: str = None
+    #: Полный путь к проекту FASTAPI
+    BASE_DIR: Path = None
+    #: Полный путь к проекту (на 1 уровень выше)
+    ROOT_DIR: Path = None
     #: Путь к папке со статическими файлами
     #: FastApi будет маршрутизировать папку со статическими файлами,
     #: если вы хотите это делать с помощью Nginx то установите пустую строку ''
-    STATIC_PATH: str = None
-    """Админ панель"""
-    #: Url подключения к БД ``СУБД+ДРАЙВЕР://USER:PASSWORD@HOST/ИМЯ_БД``
+    STATIC_PATH: Path = None
+    """БД"""
+    #: Url подключения к БД ``СУБД+ДРАЙВЕР://USER:PASSWORD@HOST:PORT/ИМЯ_БД``
     SQLALCHEMY_DATABASE_URL: str = None
-    #: Имя админа
-    ADMIN_USER_NAME: str = ''
-    #: Пароль от админ панели
-    ADMIN_PASSWORD: str = ''
-    """Отчетность"""
-    #: Все добавленные приложения
-    ALL_APP: str = ""
-    #: Все добавленные модели
-    ALL_MODEL: str = ""
-    """Другое"""
+    """Сервер"""
     #: На коком хосту запустить веб сервер
-    HOST_WEB: Optional[int] = "0.0.0.0"
+    HOST_WEB: Optional[str] = "0.0.0.0"
     #: На коком порту запустить веб сервер
     PORT_WEB: Optional[int] = "8080"
     #: Авто перезагрузка сервера
     RELOAD_WEB: bool = True
+    """Отчетность"""
+    #: Все добавленные приложения
+    ALL_APP: str = ""
+    #: Все добавленные SQL модели
+    ALL_MODEL: str = ""
+    """Админ панель"""
+    #: Имя админа
+    ADMIN_USER_NAME: str = ''
+    #: Пароль от админ панели
+    ADMIN_PASSWORD: str = ''
 
     @classmethod
     def default_dit(cls, **kwargs):
@@ -64,7 +67,7 @@ class AllowedNamesTypeFromSettings():
 AllowedNames: dict[str, Any] = AllowedNamesTypeFromSettings.default_dit()
 
 
-class BaseSetting(AllowedNamesTypeFromSettings):
+class BaseSettings(AllowedNamesTypeFromSettings):
     """Шаблон для настроек"""
 
     class Mount(BaseMount):
@@ -73,14 +76,14 @@ class BaseSetting(AllowedNamesTypeFromSettings):
             ...
 
 
-def mount_env(settings_obj: Type[BaseSetting]):
+def mount_env(settings_obj: Type[BaseSettings]):
     """
     Подключаем переменные окружения
     """
     __read_params_from_settings_file(settings_obj)
 
 
-def __read_params_from_settings_file(settings_obj: Type[BaseMount]):
+def __read_params_from_settings_file(settings_obj: Type[BaseSettings]):
     """
     Прочитать файл с настройками и занести их
     в переменные окружения интерпретатора
@@ -99,3 +102,18 @@ def __read_params_from_settings_file(settings_obj: Type[BaseMount]):
             raise KeyError(f"В файле настроек `settings.py` не реализована переменная {_no_implemented}")
         else:
             environ[_no_implemented] = str(AllowedNames[_no_implemented])
+
+
+def read_env_file(file_name: str) -> dict[str, str]:
+    """Чтение переменных окружения из указанного файла, и добавление их в ПО `python`"""
+    with open(file_name, 'r', encoding='utf-8') as _file:
+        res = {}
+        for line in _file:
+            tmp = re.sub(r'^#[\s\w\d\W\t]*|[\t\s]', '', line)
+            if tmp:
+                k, v = tmp.split('=', 1)
+                # Если значение заключено в двойные кавычки, то нужно эти кавычки убрать
+                if v.startswith('"') and v.endswith('"'):
+                    v = v[1:-1]
+                res[k] = v
+    return res

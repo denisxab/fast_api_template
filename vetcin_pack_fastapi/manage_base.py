@@ -12,7 +12,7 @@ from sqlalchemy.exc import DatabaseError
 from .database_pack.base import SQL
 from .database_pack.model_logic import RawSqlModel
 from .helpful import create_file
-from .settings_logic import BaseSetting, mount_env
+from .settings_logic import BaseSettings, mount_env
 
 
 class BaseManage:
@@ -20,7 +20,7 @@ class BaseManage:
     Функции для менеджера проекта
     """
 
-    def __init__(self, app: FastAPI, settings_obj: Type[BaseSetting]):
+    def __init__(self, app: FastAPI, settings_obj: Type[BaseSettings]):
         self.settings_obj = settings_obj
         self.app = app
         self.include_settings()
@@ -92,7 +92,7 @@ class BaseManage:
             logger.info("Таблицы НЕ удалены")
 
     @staticmethod
-    def add_app(name_app: str):
+    def create_app(name_app: str):
         """
         Создать шаблон приложения
 
@@ -152,4 +152,4 @@ class ИмяМоделиLogic(ИмяМодели):
         '''[1:].format(name_app=name_app))
         create_file(os.path.join(path_app, 'schema.py'))
         # Отчетность
-        logger.info(path_app, 'ADD_APP')
+        logger.info(path_app, 'CREATE_APP')
