@@ -9,13 +9,13 @@
 # Эталонная структура проекта
 
 - Проект
-    - static [+](IREADME.md#main%20py%20Как%20происходит%20подключение%20различных%20утилит%20к%20проекту)
-        - приложение_N [+](#create_app%20Добавить%20новое%20приложение%20в%20проект)
-            - css
-            - js
-    - main.py [+](IREADME.md#main%20py%20Как%20происходит%20подключение%20различных%20утилит%20к%20проекту)
-    - settings.py [+](#settings%20py%20Общие%20настройки%20проекта)
+  - static [+](IREADME.md#main%20py%20Как%20происходит%20подключение%20различных%20утилит%20к%20проекту)
     - приложение_N [+](#create_app%20Добавить%20новое%20приложение%20в%20проект)
+      - css
+      - js
+  - main.py [+](IREADME.md#main%20py%20Как%20происходит%20подключение%20различных%20утилит%20к%20проекту)
+  - settings.py [+](#settings%20py%20Общие%20настройки%20проекта)
+  - приложение_N [+](#create_app%20Добавить%20новое%20приложение%20в%20проект)
 
 # `settings.py` Общие настройки проекта
 
@@ -140,7 +140,7 @@ python -m vetcin_pack_fastapi.console_logic run_dev main.py
 
 ## `create_app` Добавить новое приложение в проект
 
-Для того чтобы создать новое приложение на основе стандартного шаблона, нужно выполнить команду
+Для того чтобы создать новое приложение на основе стандартного шаблона, нужно выполнить команду. НЕЗУБУДТЕ добавить новое приложение в `settings.py->Settings->Mount->mount_app`
 
 ```bash
 python -m vetcin_pack_fastapi.console_logic create_app main.py -n НовоеИмяПриложения
@@ -150,13 +150,13 @@ python -m vetcin_pack_fastapi.console_logic create_app main.py -n НовоеИм
 
 - Проект
 
-    - НовоеИмяПриложения
+  - НовоеИмяПриложения
 
-        - templates (Папка для `Html` файлов)
-        - api.py (Папка для `url` маршрутизаторов)
-        - base.py (Папка с основной логикой приложения)
-        - helpful.py (Утилиты для приложения)
-        - model.py (Модели `SQL`) [+](IREADME.md#SQL%20Модели)
+    - templates (Папка для `Html` файлов)
+    - api.py (Папка для `url` маршрутизаторов)
+    - base.py (Папка с основной логикой приложения)
+    - helpful.py (Утилиты для приложения)
+    - model.py (Модели `SQL`) [+](IREADME.md#SQL%20Модели)
 
             ```python
             from vetcin_pack_fastapi.database_pack.model_logic import RawSqlModel, SqlTypeReturn
@@ -177,17 +177,17 @@ python -m vetcin_pack_fastapi.console_logic create_app main.py -n НовоеИм
                     )
             ```
 
-        - model_logic.py (Реализация `SQL` запросов к `СУБД` для моделей из файла `model.py`) [+](IREADME.md#SQL%20Модели)
+    - model_logic.py (Реализация `SQL` запросов к `СУБД` для моделей из файла `model.py`) [+](IREADME.md#SQL%20Модели)
 
-            ```python
-            from НовоеИмяПриложения.model import ИмяМодели
+            ```python![](../../../../../../home/denis/Рабочий стол/13.jpg)
+            from НовоеИмяПриложения.model import ИмяМодели![](../../../../../../home/denis/Рабочий стол/13.jpg)
 
             class ИмяМоделиLogic(ИмяМодели):
                 ...
 
             ```
 
-        - schema.py (`JSON` схемы на основе библиотеки `Pydantic`)
+    - schema.py (`JSON` схемы на основе библиотеки `Pydantic`)
 
 ## `init_models` Создание моделей в БД
 
@@ -278,10 +278,10 @@ class UserLogic(User):
     def login(cls, login: str, password: str) -> SqlTypeReturn:
         return SqlTypeReturn(
             raw_sql=f"""
-        		select id
-				from {cls.table_name}
-				where login = :login and hash_pasword = :hash_pasword
-				""",
+          select id
+    from {cls.table_name}
+    where login = :login and hash_pasword = :hash_pasword
+    """,
             params={"login": login, "hash_pasword": password}
         )
 ```

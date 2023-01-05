@@ -68,8 +68,8 @@ class BaseManage:
                     if v.init_data():
                         await SQL.execute_raw_sql(v.init_data())
                 except DatabaseError as e:
-                    logger.warning(f"Ошибка инициализации данных:{e}", 'init_data')
-                logger.info(f"Таблица создана {k}", 'init_models')
+                    logger.warning(f"Ошибка инициализации данных:{e}", ['init_data'])
+                logger.info(f"Таблица создана {k}", ['init_models'])
 
     @staticmethod
     async def delete_models():
@@ -81,13 +81,13 @@ class BaseManage:
             if len(SQL.Base.metadata.tables) > 0:
                 async with SQL.engine.begin() as conn:
                     await conn.run_sync(SQL.Base.metadata.drop_all())
-                    logger.info(f"Таблицы удалены {list(SQL.Base.metadata.tables.keys())}", 'delete_models')
+                    logger.info(f"Таблицы удалены {list(SQL.Base.metadata.tables.keys())}", ['delete_models'])
             # Удаляем таблицы которые указаны через наследование `RawSqlModel`
             if RawSqlModel.all_tables:
                 for k, v in RawSqlModel.all_tables.items():
                     v: RawSqlModel
                     await SQL.execute_raw_sql(v.drop_table())
-                    logger.info(f"Таблица удалена {k}", 'delete_models')
+                    logger.info(f"Таблица удалена {k}", ['delete_models'])
         else:
             logger.info("Таблицы НЕ удалены")
 
@@ -152,4 +152,4 @@ class ИмяМоделиLogic(ИмяМодели):
         '''[1:].format(name_app=name_app))
         create_file(os.path.join(path_app, 'schema.py'))
         # Отчетность
-        logger.info(path_app, 'CREATE_APP')
+        logger.info(path_app, ['CREATE_APP'])

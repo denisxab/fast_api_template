@@ -7,15 +7,15 @@ import os.path
 from abc import abstractmethod
 from os import environ
 from typing import Union, Type
-
+from logsmal import logger
 from fastapi import FastAPI, APIRouter
 from fastapi.staticfiles import StaticFiles
-from logsmal import logger
 
 try:
     from sqlalchemy.orm import DeclarativeMeta
 except ImportError:
-    logger.info(f"{__file__} Ошибка импорта: from sqlalchemy.orm import DeclarativeMeta")
+    logger.info(
+        f"{__file__} Ошибка импорта: from sqlalchemy.orm import DeclarativeMeta")
 
 from .database_pack.model_logic import RawSqlModel
 
@@ -32,7 +32,8 @@ class BaseAdd:
             self,
             name: str,
             route: APIRouter,
-            model: list[Union[Type[DeclarativeMeta], Type[RawSqlModel]]] = None,
+            model: list[Union[Type[DeclarativeMeta],
+                              Type[RawSqlModel]]] = None,
             app: Union[FastAPI, APIRouter] = None,
     ):
         """
@@ -96,8 +97,8 @@ class BaseMount(BaseAdd):
         Запустить монтирование
         """
         self.mount_app()
-        logger.info(f'{environ["ALL_APP"]}', flag="APP")
-        logger.info(f'{environ["ALL_MODEL"]}', flag="MODEL")
+        logger.info(f'{environ["ALL_APP"]}', flags=["APP"])
+        logger.info(f'{environ["ALL_MODEL"]}', flags=["MODEL"])
         self._mount_root_static()
 
     @abstractmethod
@@ -124,5 +125,6 @@ class BaseMount(BaseAdd):
                     name="static"
                 )
             else:
-                logger.error(f"Нет обязательный папки static по пути: {environ['STATIC_PATH']}", "_mount_root_static")
+                logger.error(
+                    f"Нет обязательный папки static по пути: {environ['STATIC_PATH']}", "_mount_root_static")
                 exit(0)

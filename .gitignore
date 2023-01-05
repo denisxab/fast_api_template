@@ -1,3 +1,6 @@
 venvs
 __pycache__
 .idea
+venv
+test
+dist
