@@ -9,8 +9,8 @@ from fastapi import FastAPI
 from logsmal import logger
 from sqlalchemy.exc import DatabaseError
 
-from .database_pack.base import SQL
-from .database_pack.model_logic import RawSqlModel
+from mg_sql.sql_async.base import SQL
+from mg_sql.sql_async.model_logic import RawSqlModel
 from .helpful import create_file
 from .settings_logic import BaseSettings, mount_env
 
@@ -118,7 +118,7 @@ class BaseManage:
 from fastapi import APIRouter, Form, Response, Request, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from vetcin_pack_fastapi.database_pack.base import SQL
+from mg_sql.sql_async.base import SQL
 from vetcin_pack_fastapi.session_pack.base import SESSION_RAM
 
 router = APIRouter(tags=["{name_app}"], prefix="/{name_app}")
@@ -127,7 +127,7 @@ name_app = "{name_app}"
         create_file(os.path.join(path_app, 'base.py'))
         create_file(os.path.join(path_app, 'helpful.py'))
         create_file(os.path.join(path_app, 'model.py'), '''
-from vetcin_pack_fastapi.database_pack.model_logic import RawSqlModel, SqlTypeReturn
+from mg_sql.sql_async.model_logic import RawSqlModel, SqlTypeReturn
 
 class ИмяМодели(RawSqlModel):
     table_name = 'ИмяМодели'

@@ -13,6 +13,7 @@ python-multipart = "^0.0.5"
 SQLAlchemy = "^1.4.37"
 click = "^8.1.3"
 logsmal = "^0.0.15"
+mg-sql = "^0.0.1"
 
 [tool.poetry.dev-dependencies]
 

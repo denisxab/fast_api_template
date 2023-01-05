@@ -17,8 +17,7 @@ except ImportError:
     logger.info(
         f"{__file__} Ошибка импорта: from sqlalchemy.orm import DeclarativeMeta")
 
-from .database_pack.model_logic import RawSqlModel
-
+from mg_sql.sql_async.model_logic import RawSqlModel
 
 class BaseAdd:
     """

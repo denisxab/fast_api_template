@@ -5,7 +5,7 @@ from abc import abstractclassmethod
 from datetime import datetime
 from typing import Any, Optional, Callable
 
-from vetcin_pack_fastapi.database_pack.helpful import hashRandom
+from mg_sql.sql_async.helpful import hashPassword, hashRandom
 
 SESSION_NAME = "session_id"
 

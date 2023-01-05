@@ -36,7 +36,7 @@
 """
 from pathlib import Path
 
-from vetcin_pack_fastapi.database_pack.base import SqlUrlConnect
+from mg_sql.sql_async.base import SqlUrlConnect
 from vetcin_pack_fastapi.mount_logic import BaseMount
 from vetcin_pack_fastapi.settings_logic import BaseSettings
 
@@ -159,7 +159,7 @@ python -m vetcin_pack_fastapi.console_logic create_app main.py -n НовоеИм
     - model.py (Модели `SQL`) [+](IREADME.md#SQL%20Модели)
 
             ```python
-            from vetcin_pack_fastapi.database_pack.model_logic import RawSqlModel, SqlTypeReturn
+            from mg_sql.sql_async.model_logic import RawSqlModel, SqlTypeReturn
 
             class ИмяМодели(RawSqlModel):
                 table_name = 'ИмяМодели'
@@ -216,7 +216,7 @@ python -m vetcin_pack_fastapi.console_logic create_app main.py -n НовоеИм
 
 ## Вариант модели через `RawSqlModel`
 
-Сырые `SQL` запросы дают большую гибкость в использование БД, они дают возможность пользоваться всеми особенностями `СУБД`. Для унификации моделей ориентированных на использование сырых `SQL` запросов, есть класс `vetcin_pack_fastapi.database_pack.model_logic.RawSqlModel`, от этого класса должна наследоваться наша модель `class ИмяМодели(RawSqlModel)`.
+Сырые `SQL` запросы дают большую гибкость в использование БД, они дают возможность пользоваться всеми особенностями `СУБД`. Для унификации моделей ориентированных на использование сырых `SQL` запросов, есть класс `mg_sql.sql_async.model_logic.RawSqlModel`, от этого класса должна наследоваться наша модель `class ИмяМодели(RawSqlModel)`.
 
 В наследнике `RawSqlModel` можно реализовать методы:
 
@@ -233,7 +233,7 @@ python -m vetcin_pack_fastapi.console_logic create_app main.py -n НовоеИм
 Пример реализации модели в `model.py` через `RawSqlModel`
 
 ```python
-from vetcin_pack_fastapi.database_pack.model_logic import RawSqlModel
+from mg_sql.sql_async.model_logic import RawSqlModel
 
 
 class User(RawSqlModel):
@@ -269,7 +269,7 @@ class User(RawSqlModel):
 
 ```python
 from .model import User
-from vetcin_pack_fastapi.database_pack.model_logic import SqlTypeReturn
+from mg_sql.sql_async.model_logic import SqlTypeReturn
 
 
 class UserLogic(User):
@@ -293,8 +293,8 @@ from fastapi import Request, Response, Depends
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from vetcin_pack_fastapi.database_pack.base import SQL
-from vetcin_pack_fastapi.database_pack.helpful import hashPassword
+from mg_sql.sql_async.base import SQL
+from mg_sql.sql_async.helpful import hashPassword
 from vetcin_pack_fastapi.http_helpful import ErrorCode, error_json, successfully_json
 from .model_logic import UserLogic
 

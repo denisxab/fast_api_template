@@ -42,8 +42,7 @@ class SqlTypeReturn(TypedDict):
     ..code-block::python
 
         from users.model import User
-        from vetcin_pack_fastapi.database_pack.model_logic import SqlTypeReturn
-
+        from mg_sql.sql_async.model_logic import SqlTypeReturn
 
         class UserLogic(User):
 

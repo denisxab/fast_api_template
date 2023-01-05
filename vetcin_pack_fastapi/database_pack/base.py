@@ -8,7 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.decl_api import DeclarativeMeta
 
-from vetcin_pack_fastapi.database_pack.helpful import SqlUrlConnect
+from mg_sql.sql_async.helpful import SqlUrlConnect
 
 
 class SQL:

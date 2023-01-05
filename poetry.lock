@@ -233,6 +233,21 @@ pydantic = ">=1.10.2,<2.0.0"
 rich = ">=12.6.0,<13.0.0"
 
 [[package]]
+name = "mg-sql"
+version = "0.0.1"
+description = "Создание файлов конфигурация"
+category = "main"
+optional = false
+python-versions = ">=3.10,<4.0"
+files = [
+    {file = "mg_sql-0.0.1-py3-none-any.whl", hash = "sha256:bdf6a823d3517e43f160eafa7fa22cd0e0b6cc816611526435a14f6efea66f32"},
+    {file = "mg_sql-0.0.1.tar.gz", hash = "sha256:38faae5a644c044b06047203de08622ede39555f2b863bac82a27bc227a6552d"},
+]
+
+[package.dependencies]
+SQLAlchemy = ">=1.4.39,<2.0.0"
+
+[[package]]
 name = "orjson"
 version = "3.8.4"
 description = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
@@ -539,4 +554,4 @@ standard = ["PyYAML (>=5.1)", "colorama (>=0.4)", "httptools (>=0.4.0)", "python
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "9b5446dc4f2c437e9023e04cbb750b6f866c3520a8dac68c24149826bff9c18b"
+content-hash = "bec1248b1130988b8a85aee1a44eb10620c18938e0da689f211d4e67ced7dda5"
