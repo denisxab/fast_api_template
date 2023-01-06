@@ -150,6 +150,12 @@ from {name_app}.model import ИмяМодели
 class ИмяМоделиLogic(ИмяМодели):
     ...
         '''[1:].format(name_app=name_app))
-        create_file(os.path.join(path_app, 'schema.py'))
+        create_file(os.path.join(path_app, 'schema.py'),'''
+from enum import Enum
+from pydantic import BaseModel, Field
+
+class ИмяСхемы(BaseModel):
+    ...
+        ''')
         # Отчетность
         logger.info(path_app, ['CREATE_APP'])
